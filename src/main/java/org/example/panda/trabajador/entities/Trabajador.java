@@ -1,11 +1,13 @@
 package org.example.panda.trabajador.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -14,14 +16,14 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "trabajadores", uniqueConstraints = {})
 @Builder
-public class Trabajador {
+public class Trabajador implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Integer id;
-    @Column(name = "nombres")
+    @Column(name = "nombres", nullable = false, length = 50)
     private String nombres;
-    @Column(name = "apellidos", nullable = false, length = 255)
+    @Column(name = "apellidos", nullable = false, length = 50)
     private String apellidos;
 
     @Column(name = "num_identidad", unique = true, nullable = false, length = 20)
@@ -30,15 +32,18 @@ public class Trabajador {
     @Column(name = "fecha_nacimiento", nullable = false)
     private Date fechaNacimiento;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY) //carga perezosa, listar solo cuando lo necesitemos
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)//1. para que ignore lzy exeption ya que esta devolvera ese error porque le pusimos la propiedad de lazy./2.Para que la seccion api rest ignore la propiedad aserializar en una cadena de serialización
     @JoinColumn(name = "id_genero", nullable = false)
     private Genero genero;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)//1. para que ignore lzy exeption ya que esta devolvera ese error porque le pusimos la propiedad de lazy./2.Para que la seccion api rest ignore la propiedad aserializar en una cadena de serialización
     @JoinColumn(name = "estado_civil_id", nullable = false)
     private EstadoCivil estadoCivil;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)//1. para que ignore lzy exeption ya que esta devolvera ese error porque le pusimos la propiedad de lazy./2.Para que la seccion api rest ignore la propiedad aserializar en una cadena de serialización
     @JoinColumn(name = "nacionalidad_id", nullable = false)
     private Nacionalidad nacionalidad;
 
@@ -51,9 +56,10 @@ public class Trabajador {
     @Column(name = "email", length = 255)
     private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "cargo_puesto_id", nullable = false)
-    private Cargo cargoPuesto;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)//1. para que ignore lzy exeption ya que esta devolvera ese error porque le pusimos la propiedad de lazy./2.Para que la seccion api rest ignore la propiedad aserializar en una cadena de serialización
+    @JoinColumn(name = "cargo_id", nullable = false)
+    private Cargo cargo;
 
     @Column(name = "fecha_ingreso", nullable = false)
     private Date fechaIngreso;

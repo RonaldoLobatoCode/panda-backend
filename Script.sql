@@ -114,8 +114,8 @@ INSERT INTO cargos (nombre_cargo) VALUES
    ('D4');
 CREATE TABLE IF NOT EXISTS trabajadores (
     id SERIAL PRIMARY KEY,
-    nombres VARCHAR(255) NOT NULL,
-    apellidos VARCHAR(255) NOT NULL,
+    nombres VARCHAR(50) NOT NULL,
+    apellidos VARCHAR(50) NOT NULL,
     num_identidad VARCHAR(20) UNIQUE NOT NULL,
     fecha_nacimiento DATE NOT NULL,
     id_genero INT,
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS trabajadores (
     direccion_residencia VARCHAR(255),
     telefono VARCHAR(15),
     email VARCHAR(255),
-    cargo_puesto_id INT,
+    cargo_id INT,
     fecha_ingreso DATE,
     num_cuenta_bancaria VARCHAR(14),
     CONSTRAINT uq_trab_num_iden UNIQUE (num_identidad),
@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS trabajadores (
     CONSTRAINT fk_trab_genero FOREIGN KEY (id_genero) REFERENCES generos(id) ON DELETE SET NULL,
     CONSTRAINT fk_trab_est_civil FOREIGN KEY (estado_civil_id) REFERENCES estados_civiles(id) ON DELETE SET NULL,
     CONSTRAINT fk_trab_nacionalidad FOREIGN KEY (nacionalidad_id) REFERENCES nacionalidades(id) ON DELETE SET NULL,
-    CONSTRAINT fk_trab_cargo_puesto FOREIGN KEY (cargo_puesto_id) REFERENCES cargos(id) ON DELETE SET NULL
+    CONSTRAINT fk_trab_cargo_puesto FOREIGN KEY (cargo_id) REFERENCES cargos(id) ON DELETE SET NULL
 );
 
 
@@ -204,16 +204,16 @@ CREATE TABLE IF NOT EXISTS guias_transportista (
     fecha_hora_emision TIMESTAMP NOT NULL,
     fecha_traslado DATE NOT NULL,
     remitente_ruc VARCHAR(15) not null,
-    remitente_nombre VARCHAR(255) NOT NULL,
-    remitente_direccion VARCHAR(255),
+    remitente_nombre VARCHAR(100) NOT NULL,
+    remitente_direccion VARCHAR(100),
     remitente_telefono VARCHAR(15),
     destinatario_ruc VARCHAR(15) not null,
-    destinatario_nombre VARCHAR(255) NOT NULL,
-    destinatario_direccion VARCHAR(255),
+    destinatario_nombre VARCHAR(100) NOT NULL,
+    destinatario_direccion VARCHAR(100),
     destinatario_telefono VARCHAR(15),
     peso_carga DECIMAL(10, 2) NOT NULL,
-    dni_chofer VARCHAR(255) NOT NULL,
-    nombre_chofer VARCHAR(255) NOT NULL,
+    num_doc_chofer VARCHAR(20) NOT NULL,
+    nombre_chofer VARCHAR(50) NOT NULL,
     placa_vehiculo VARCHAR(15) NOT NULL,
     ruc_pagador_del_flete VARCHAR(15) not null
     

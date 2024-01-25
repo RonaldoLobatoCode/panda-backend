@@ -5,12 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "estados_civiles", uniqueConstraints = {@UniqueConstraint(columnNames = {"nombreEstadoCivil"})})
-public class EstadoCivil {
+public class EstadoCivil implements Serializable {
     private enum EstadoCivilEnum {
         Soltero,
         Casado,
