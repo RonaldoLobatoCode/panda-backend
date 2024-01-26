@@ -6,7 +6,6 @@ import org.example.panda.trabajador.dtos.TrabajadorResponse;
 import org.example.panda.trabajador.entities.Trabajador;
 import org.example.panda.trabajador.repositories.TrabajadorRepository;
 import org.example.panda.trabajador.services.ITrabajadorService;
-import org.hibernate.tool.schema.spi.ExceptionHandler;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
