@@ -28,9 +28,8 @@ public class TrabajadorController {
         return new ResponseEntity<>(trabajadorService.listTrabajadores(numeroDePagina,medidaDePagina, ordenarPor, sortDir), HttpStatus.OK);
     }
     @GetMapping("/trabajador/{id}")
-    public ResponseEntity<?> findTrabajadorById(@PathVariable("id") Integer id){
-        Optional<TrabajadorDto> findTrabajador=trabajadorService.listTrabajadorById(id);
-        return findTrabajador.isPresent() ? ResponseEntity.ok(findTrabajador.get()) : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+    public ResponseEntity<TrabajadorDto> findTrabajadorById(@PathVariable("id") Integer id){
+        return new ResponseEntity<>(trabajadorService.listTrabajadorById(id), HttpStatus.OK);
     }
 
     @PostMapping("trabajador")
@@ -38,9 +37,13 @@ public class TrabajadorController {
         return new ResponseEntity<>(trabajadorService.createTrabajador(trabajadorDto), HttpStatus.CREATED);
     }
     @PutMapping("trabajador/{id}")
-    public ResponseEntity<?> updateTrabajador(@Valid @RequestBody TrabajadorDto trabajadorDto, @PathVariable("id") Integer id){
-        Optional<TrabajadorDto> optionalTrabajadorDto= trabajadorService.updateTrabajador(id, trabajadorDto);
-        return optionalTrabajadorDto.isPresent()? ResponseEntity.ok(optionalTrabajadorDto.get()) : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no existe");
+    public ResponseEntity<TrabajadorDto> updateTrabajador(@Valid @RequestBody TrabajadorDto trabajadorDto, @PathVariable("id") Integer id){
+        return new ResponseEntity<>(trabajadorService.updateTrabajador(id, trabajadorDto), HttpStatus.OK);
     }
 
+    @DeleteMapping("trabajador/{id}")
+    public ResponseEntity<String> deleteTrabajador(@PathVariable("id") Integer id){
+        trabajadorService.deleteTrabajador(id);
+        return new ResponseEntity<>("Trabajador eliminado con éxito", HttpStatus.NO_CONTENT);
+    }
 }

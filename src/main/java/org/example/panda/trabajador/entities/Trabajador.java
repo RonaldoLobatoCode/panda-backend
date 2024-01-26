@@ -14,7 +14,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "trabajadores", uniqueConstraints = {})
+@Table(name = "trabajadores", uniqueConstraints = {@UniqueConstraint(columnNames = {"numIdentidad"}),@UniqueConstraint(columnNames = {"email"}), @UniqueConstraint(columnNames = {"numCuentaBancaria"})})
 @Builder
 public class Trabajador implements Serializable {
     @Id

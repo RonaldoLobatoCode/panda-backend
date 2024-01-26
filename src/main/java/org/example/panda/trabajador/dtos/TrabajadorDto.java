@@ -25,6 +25,7 @@ public class TrabajadorDto implements Serializable {
     private String numIdentidad;
 
     @Past(message = "La fecha de nacimiento debe ser en el pasado.")
+    @NotNull(message = "La fecha no puede estar vacía")
     private Date fechaNacimiento;
 
     @NotNull(message = "El género no puede estar vacío.")
@@ -48,7 +49,10 @@ public class TrabajadorDto implements Serializable {
 
     @NotNull(message = "El cargo no puede estar vacío.")
     private Cargo cargo;
-    @NotNull(message = "la fecha no puede estar vacía.")
+
+
+    @Past(message = "La fecha de ingreso debe ser en el pasado.")
+    @NotNull(message = "La fecha no puede estar vacía")
     private Date fechaIngreso;
 
     @NotEmpty(message = "El número de cuenta bancaria no puede estar vacío.")

@@ -12,8 +12,8 @@ public interface ITrabajadorService {
     TrabajadorDto createTrabajador(TrabajadorDto trabajadorDto);
     TrabajadorResponse listTrabajadores(int numeroDePagina, int medidaDePagina, String ordenarPor, String sortDir);
 
-    Optional<TrabajadorDto> listTrabajadorById(Integer id);
-    Optional<TrabajadorDto> updateTrabajador(Integer id, TrabajadorDto trabajadorDto);
-    boolean deleteTrabajadorById(Integer Id);
+    TrabajadorDto listTrabajadorById(Integer id);
+    TrabajadorDto updateTrabajador(Integer id, TrabajadorDto trabajadorDto);
+    void deleteTrabajador(Integer Id);
 
 }

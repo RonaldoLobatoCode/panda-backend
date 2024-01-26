@@ -1,19 +1,21 @@
 package org.example.panda.trabajador.services.impl;
 
+import org.example.panda.exceptions.ResourceNotFoundException;
 import org.example.panda.trabajador.dtos.TrabajadorDto;
 import org.example.panda.trabajador.dtos.TrabajadorResponse;
 import org.example.panda.trabajador.entities.Trabajador;
 import org.example.panda.trabajador.repositories.TrabajadorRepository;
 import org.example.panda.trabajador.services.ITrabajadorService;
+import org.hibernate.tool.schema.spi.ExceptionHandler;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,13 +28,15 @@ public class TrabajadorServiceImpl implements ITrabajadorService {
         this.trabajadorRepository = trabajadorRepository;
     }
 
-
+    @Transactional
     @Override
     public TrabajadorDto createTrabajador(TrabajadorDto trabajadorDto) {
-
+        validateUniqueValues(trabajadorDto);
         return entityToDto(trabajadorRepository.save(dtoToEntity(trabajadorDto)));
     }
-
+    @Transactional(readOnly = true) //usamos esto para indicarle que haga los procesos de transacción automáticos, como begin, commit, rollback, etc. y nosotros ya no preocuparnos por ello
+    //generalmente usamos @Transactional(readOnly=true) para la operación de búsqueda o recuperación para asegurarnos de que solo
+    //podamos realizar la operacion de solo lectura
     @Override
     public TrabajadorResponse listTrabajadores(int numeroDePagina, int medidaDePagina, String ordenarPor, String sortDir) {
         Sort sort=sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())?Sort.by(ordenarPor).ascending():Sort.by(ordenarPor).descending();//le indicamos que si pasa un parametro sera de forma ascendente, de lo contraio será de forma descendente.
@@ -51,44 +55,30 @@ public class TrabajadorServiceImpl implements ITrabajadorService {
                 .ultima(trabajadores.isLast()) //confirma si es la última página
                 .build();
     }
-
+    @Transactional(readOnly = true)
     @Override
-    public Optional<TrabajadorDto> listTrabajadorById(Integer id) {
-        Optional<Trabajador> trabajador=trabajadorRepository.findById(id);
-       return trabajador.isPresent() ?  trabajador.map(this::entityToDto): Optional.empty();
-
+    public TrabajadorDto listTrabajadorById(Integer id) {
+        Trabajador trabajador=trabajadorRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Trabajador", "id", id));
+       return entityToDto(trabajador);
     }
-
+    @Transactional
     @Override
-    public Optional<TrabajadorDto> updateTrabajador(Integer id, TrabajadorDto trabajadorDto) {
-        Optional<Trabajador> findTrabajador= trabajadorRepository.findById(id);
-        if(findTrabajador.isPresent()){
-            Trabajador existentTrabajador = findTrabajador.get();
-            existentTrabajador.builder()
-                    .nombres(trabajadorDto.getNombres())
-                    .apellidos(trabajadorDto.getApellidos())
-                    .numIdentidad(trabajadorDto.getNumIdentidad())
-                    .fechaNacimiento(trabajadorDto.getFechaNacimiento())
-                    .genero(trabajadorDto.getGenero())
-                    .estadoCivil(trabajadorDto.getEstadoCivil())
-                    .nacionalidad(trabajadorDto.getNacionalidad())
-                    .direccionResidencia(trabajadorDto.getDireccionResidencia())
-                    .telefono(trabajadorDto.getTelefono())
-                    .email(trabajadorDto.getEmail())
-                    .cargo(trabajadorDto.getCargo())
-                    .fechaIngreso(trabajadorDto.getFechaIngreso())
-                    .numCuentaBancaria(trabajadorDto.getNumCuentaBancaria())
-                    .build();
-            trabajadorRepository.save(existentTrabajador);
-            return Optional.of(entityToDto(existentTrabajador));
+    public TrabajadorDto updateTrabajador(Integer id, TrabajadorDto trabajadorDto) {
+        if(!id.equals(trabajadorDto.getId()))
+        {
+            throw new IllegalArgumentException("El ID enviado por la URL es distinto al del registro.");
         }
-        return Optional.empty();
-
+        validateUniqueValues(trabajadorDto);
+        Trabajador findTrabajador= trabajadorRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Trabajador", "id", id));
+         return entityToDto(trabajadorRepository.save(dtoToEntity(trabajadorDto)));
     }
-
+    @Transactional
     @Override
-    public boolean deleteTrabajadorById(Integer Id) {
-        return trabajadorRepository.findById(Id).isPresent();
+    public void deleteTrabajador(Integer Id) {
+        Trabajador trabajador=trabajadorRepository.findById(Id)
+                .orElseThrow(()->new ResourceNotFoundException("Trabajador", "id", Id));
+        trabajadorRepository.delete(trabajador);
     }
     /*AQUI HACEMOS USO DE ModelMapper PARA AHORRAR MUCHAS LINEAS DE CODIGO, PERO DEJAREMOS COMENTADO LO QUE HABIAMOS HECHO ANTES A MODO DE PRÁCTICA*/
     private TrabajadorDto entityToDto(Trabajador trabajador){
@@ -97,5 +87,15 @@ public class TrabajadorServiceImpl implements ITrabajadorService {
     //convertir de DTO a Entidad
     private Trabajador dtoToEntity(TrabajadorDto trabajadorDto){
         return modelMapper.map(trabajadorDto, Trabajador.class);
+    }
+    private void validateUniqueValues( TrabajadorDto trabajadorDto){
+        List<Trabajador> trabajadores= trabajadorRepository.findAll();
+        for (Trabajador tr : trabajadores) {
+            if(tr.getEmail().equals(trabajadorDto.getEmail())){
+               throw new IllegalArgumentException("El email ya existe, por favor ingrese otro.");
+            }else if(tr.getNumIdentidad().equals(trabajadorDto.getNumIdentidad())){
+                throw new IllegalArgumentException("El número de identidad ya existe, por favor ingrese otro.");
+            } else if(tr.getNumCuentaBancaria().equals(trabajadorDto.getNumCuentaBancaria())) throw new IllegalArgumentException("El número de de cuenta bancaria ya existe, por favor ingrese otro.");
+        }
     }
 }
