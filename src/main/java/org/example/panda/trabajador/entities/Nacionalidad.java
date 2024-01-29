@@ -11,9 +11,9 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "nacionalidades", uniqueConstraints = {@UniqueConstraint(columnNames = {"nombreNacionalidad"})})
+@Table(name = "nacionalidades", uniqueConstraints = {@UniqueConstraint(columnNames = {"nombre_nacionalidad"})})
 public class Nacionalidad implements Serializable {
-    private enum NacionalidadEnum {
+    public enum NacionalidadEnum {
         Argentina,
         Brasileña,
         Chilena,

@@ -1,5 +1,6 @@
 package org.example.panda.trabajador.dtos;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class TrabajadorResponse implements Serializable {
     private List<TrabajadorDto> contenido;
     private int numeroPagina;

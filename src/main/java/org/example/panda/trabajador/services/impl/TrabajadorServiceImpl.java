@@ -6,8 +6,8 @@ import org.example.panda.trabajador.dtos.TrabajadorResponse;
 import org.example.panda.trabajador.entities.Trabajador;
 import org.example.panda.trabajador.repositories.TrabajadorRepository;
 import org.example.panda.trabajador.services.ITrabajadorService;
-import org.hibernate.tool.schema.spi.ExceptionHandler;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +32,7 @@ public class TrabajadorServiceImpl implements ITrabajadorService {
     @Override
     public TrabajadorDto createTrabajador(TrabajadorDto trabajadorDto) {
         validateUniqueValues(trabajadorDto);
-        return entityToDto(trabajadorRepository.save(dtoToEntity(trabajadorDto)));
+        return trabajadorEntityToDto(trabajadorRepository.save(trabajadorDtoToEntity(trabajadorDto)));
     }
     @Transactional(readOnly = true) //usamos esto para indicarle que haga los procesos de transacción automáticos, como begin, commit, rollback, etc. y nosotros ya no preocuparnos por ello
     //generalmente usamos @Transactional(readOnly=true) para la operación de búsqueda o recuperación para asegurarnos de que solo
@@ -45,7 +45,7 @@ public class TrabajadorServiceImpl implements ITrabajadorService {
         Page<Trabajador> trabajadores= trabajadorRepository.findAll(pageable);
 
         List<Trabajador> TrabajadoresList= trabajadores.getContent();
-        List<TrabajadorDto> contenido= TrabajadoresList.stream().map(this::entityToDto).collect(Collectors.toList()); //convertimos a dto
+        List<TrabajadorDto> contenido= TrabajadoresList.stream().map(this::trabajadorEntityToDto).collect(Collectors.toList()); //convertimos a dto
         return TrabajadorResponse.builder()
                 .contenido(contenido)
                 .numeroPagina(trabajadores.getNumber())
@@ -59,19 +59,19 @@ public class TrabajadorServiceImpl implements ITrabajadorService {
     @Override
     public TrabajadorDto listTrabajadorById(Integer id) {
         Trabajador trabajador=trabajadorRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Trabajador", "id", id));
-       return entityToDto(trabajador);
+       return trabajadorEntityToDto(trabajador);
     }
     @Transactional
     @Override
     public TrabajadorDto updateTrabajador(Integer id, TrabajadorDto trabajadorDto) {
-        if(!id.equals(trabajadorDto.getId()))
-        {
-            throw new IllegalArgumentException("El ID enviado por la URL es distinto al del registro.");
+        if(trabajadorDto.getId()==null || id.equals(trabajadorDto.getId())){
+            validateUniqueValues(trabajadorDto, id);
+            Trabajador findTrabajador= trabajadorRepository.findById(id)
+                    .orElseThrow(()->new ResourceNotFoundException("Trabajador", "id", id));
+            trabajadorDto.setId(findTrabajador.getId());
+            return trabajadorEntityToDto(trabajadorRepository.save(trabajadorDtoToEntity(trabajadorDto)));
         }
-        validateUniqueValues(trabajadorDto);
-        Trabajador findTrabajador= trabajadorRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("Trabajador", "id", id));
-         return entityToDto(trabajadorRepository.save(dtoToEntity(trabajadorDto)));
+            throw new IllegalArgumentException("El ID enviado por la URL es distinto al del registro.");
     }
     @Transactional
     @Override
@@ -81,18 +81,30 @@ public class TrabajadorServiceImpl implements ITrabajadorService {
         trabajadorRepository.delete(trabajador);
     }
     /*AQUI HACEMOS USO DE ModelMapper PARA AHORRAR MUCHAS LINEAS DE CODIGO, PERO DEJAREMOS COMENTADO LO QUE HABIAMOS HECHO ANTES A MODO DE PRÁCTICA*/
-    private TrabajadorDto entityToDto(Trabajador trabajador){
+    private TrabajadorDto trabajadorEntityToDto(Trabajador trabajador){
         return modelMapper.map(trabajador, TrabajadorDto.class);//PublicacionDTO.class: La clase destino a la que se mapearán los datos.
     }
     //convertir de DTO a Entidad
-    private Trabajador dtoToEntity(TrabajadorDto trabajadorDto){
+    private Trabajador trabajadorDtoToEntity(TrabajadorDto trabajadorDto){
         return modelMapper.map(trabajadorDto, Trabajador.class);
     }
-    private void validateUniqueValues( TrabajadorDto trabajadorDto){
+    public void validateUniqueValues( TrabajadorDto trabajadorDto, Integer id){
+        List<Trabajador> trabajadores= trabajadorRepository.findAll();
+        for (Trabajador tr : trabajadores) {
+            if(tr.getEmail().equals(trabajadorDto.getEmail()) && !tr.getId().equals(id)){
+                throw new IllegalArgumentException("El email ya existe, por favor ingrese otro.");
+
+            }else if(tr.getNumIdentidad().equals(trabajadorDto.getNumIdentidad()) && !tr.getId().equals(id)){
+                throw new IllegalArgumentException("El número de identidad ya existe, por favor ingrese otro.");
+            } else if(tr.getNumCuentaBancaria().equals(trabajadorDto.getNumCuentaBancaria()) && !tr.getId().equals(id)) throw new IllegalArgumentException("El número de de cuenta bancaria ya existe, por favor ingrese otro.");
+        }
+    }
+    public void validateUniqueValues( TrabajadorDto trabajadorDto){
         List<Trabajador> trabajadores= trabajadorRepository.findAll();
         for (Trabajador tr : trabajadores) {
             if(tr.getEmail().equals(trabajadorDto.getEmail())){
-               throw new IllegalArgumentException("El email ya existe, por favor ingrese otro.");
+                throw new IllegalArgumentException("El email ya existe, por favor ingrese otro.");
+
             }else if(tr.getNumIdentidad().equals(trabajadorDto.getNumIdentidad())){
                 throw new IllegalArgumentException("El número de identidad ya existe, por favor ingrese otro.");
             } else if(tr.getNumCuentaBancaria().equals(trabajadorDto.getNumCuentaBancaria())) throw new IllegalArgumentException("El número de de cuenta bancaria ya existe, por favor ingrese otro.");

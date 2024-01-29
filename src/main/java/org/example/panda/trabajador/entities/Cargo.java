@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "cargos", uniqueConstraints = {@UniqueConstraint(columnNames = {"nombreCargo"})})
+@Table(name = "cargos", uniqueConstraints = {@UniqueConstraint(columnNames = {"nombre_cargo"})})
 public class Cargo implements Serializable {
     public enum CargoEnum {
         Conductor_de_Camion,

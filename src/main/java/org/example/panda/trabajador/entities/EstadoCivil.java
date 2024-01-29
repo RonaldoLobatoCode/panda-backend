@@ -11,9 +11,9 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "estados_civiles", uniqueConstraints = {@UniqueConstraint(columnNames = {"nombreEstadoCivil"})})
+@Table(name = "estados_civiles", uniqueConstraints = {@UniqueConstraint(columnNames = {"nombre_est_civil"})})
 public class EstadoCivil implements Serializable {
-    private enum EstadoCivilEnum {
+    public enum EstadoCivilEnum {
         Soltero,
         Casado,
         Divorciado,
