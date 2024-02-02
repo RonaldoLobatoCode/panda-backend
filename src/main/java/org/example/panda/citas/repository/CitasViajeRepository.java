@@ -1,4 +1,4 @@
-package org.example.panda.conductor.repositories;
+package org.example.panda.citas.repository;
 
 import org.example.panda.citas.entity.CitasViaje;
 import org.springframework.data.jpa.repository.JpaRepository;
