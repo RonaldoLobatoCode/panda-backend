@@ -1,4 +1,4 @@
-package org.example.panda.conductor.entities;
+package org.example.panda.citas.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.panda.conductor.entities.Conductor;
 
 import java.io.Serializable;
 import java.util.Date;
