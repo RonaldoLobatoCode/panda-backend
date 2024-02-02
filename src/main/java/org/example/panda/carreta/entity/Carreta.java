@@ -1,4 +1,4 @@
-package org.example.panda.conductor.entities;
+package org.example.panda.carreta.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
