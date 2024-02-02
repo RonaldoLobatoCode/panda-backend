@@ -1,4 +1,4 @@
-package org.example.panda.conductor.repositories;
+package org.example.panda.camion.repository;
 
 import org.example.panda.camion.entity.Camion;
 import org.springframework.data.jpa.repository.JpaRepository;
