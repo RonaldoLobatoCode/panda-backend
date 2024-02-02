@@ -1,4 +1,4 @@
-package org.example.panda.conductor.entities;
+package org.example.panda.camion.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;

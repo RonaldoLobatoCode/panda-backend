@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.panda.camion.entity.Camion;
 import org.example.panda.trabajador.entities.Trabajador;
 
 import java.io.Serializable;
