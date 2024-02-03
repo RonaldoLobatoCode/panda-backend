@@ -27,7 +27,6 @@ public class CamionServiceImpl implements ICamionService {
 
     private final CamionRepository camionRepository;
 
-    @Transactional
     @Override
     public CamionDto createCamion(CamionDto camionDto) {
         validarPlaca(camionDto);
@@ -63,15 +62,25 @@ public class CamionServiceImpl implements ICamionService {
     @Transactional
     @Override
     public CamionDto updateCamion(Integer id, CamionDto camionDto) {
-        if (camionDto.getId() == null || id.equals(camionDto.getId())){
+        Camion existingCamion = camionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Camion", "id", id));
+
+        if (camionDto.getId() == null || id.equals(camionDto.getId())) {
             validarPlaca(camionDto, id);
-            Camion findCamion = camionRepository.findById(id)
-                    .orElseThrow(()-> new ResourceNotFoundException("Camion","id",id));
-            camionDto.setId(findCamion.getId());
-            return camionEntityToDto(camionRepository.save(camionDtoToEntity(camionDto)));
+
+            // Actualiza solo los campos que se pueden modificar
+            existingCamion.setMarca(camionDto.getMarca());
+            existingCamion.setModelo(camionDto.getModelo());
+            existingCamion.setAñoFabricacion(camionDto.getAñoFabricacion());
+            existingCamion.setPlaca(camionDto.getPlaca());
+
+            // No actualiza la relación carreta
+
+            return camionEntityToDto(camionRepository.save(existingCamion));
         }
         throw new IllegalArgumentException("El ID proporcionado vía URL no coincide con nuestros registros.");
     }
+
 
     @Transactional
     @Override
