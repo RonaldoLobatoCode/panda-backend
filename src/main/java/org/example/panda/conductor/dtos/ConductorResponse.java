@@ -17,4 +17,5 @@ public class ConductorResponse {
     private long totalElementos;
     private int totalPaginas;
     private boolean ultima;
+
 }
