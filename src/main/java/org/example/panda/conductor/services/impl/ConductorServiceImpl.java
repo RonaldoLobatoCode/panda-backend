@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class ConductorServiceImpl implements IConductorService {
+public class  ConductorServiceImpl implements IConductorService {
 
     private final ModelMapper modelMapper;
 
