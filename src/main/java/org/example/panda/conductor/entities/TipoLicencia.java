@@ -38,7 +38,7 @@ public class TipoLicencia implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private LOng id;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_licencia", nullable = false)
