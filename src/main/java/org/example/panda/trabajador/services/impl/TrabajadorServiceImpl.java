@@ -1,5 +1,6 @@
 package org.example.panda.trabajador.services.impl;
 
+import lombok.AllArgsConstructor;
 import org.example.panda.exceptions.ResourceNotFoundException;
 import org.example.panda.trabajador.dtos.TrabajadorDto;
 import org.example.panda.trabajador.dtos.TrabajadorResponse;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class TrabajadorServiceImpl implements ITrabajadorService {
+
     private final ModelMapper modelMapper;
     private final TrabajadorRepository trabajadorRepository;
 
