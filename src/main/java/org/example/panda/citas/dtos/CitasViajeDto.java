@@ -7,19 +7,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.panda.conductor.entities.Conductor;
-import java.util.Date;
+
+import java.io.Serializable;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CitasViajeDto {
+public class CitasViajeDto implements Serializable {
 
     private Integer id;
 
     @Past(message = "La reservación de fecha de cita debe ser en el pasado.")
     @NotNull(message = "La reservación de fecha de cita no puede estar vacía")
-    private Date fechaCita;
+    private LocalDate fechaCita;
 
     @NotNull(message = "El origen no puede estar vacía.")
     private String origen;

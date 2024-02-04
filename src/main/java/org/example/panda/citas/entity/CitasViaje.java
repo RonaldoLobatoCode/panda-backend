@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import org.example.panda.conductor.entities.Conductor;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "citas_viaje")
@@ -25,7 +25,7 @@ public class CitasViaje implements Serializable{
     private Integer id;
 
     @Column(name = "fecha_cita", nullable = false)
-    private Date fechaCita;
+    private LocalDate fechaCita;
 
     @Column(name = "origen", nullable = false, length = 100)
     private String origen;

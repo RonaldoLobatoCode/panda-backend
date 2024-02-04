@@ -69,8 +69,8 @@ public class CitasViajeServiceImpl implements ICitasViajeService {
 
     @Override
     public void deleteCitasViaje(Integer Id) {
-        CitasViaje citasViaje = citasViajeRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("CitasViaje","id",id));
+        CitasViaje citasViaje = citasViajeRepository.findById(Id)
+                .orElseThrow(()-> new ResourceNotFoundException("CitasViaje","id",Id));
         citasViajeRepository.delete(citasViaje);
     }
 
