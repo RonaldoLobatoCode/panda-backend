@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class TrabajadorServiceImpl implements ITrabajadorService {
+
     private final ModelMapper modelMapper;
     private final TrabajadorRepository trabajadorRepository;
 
