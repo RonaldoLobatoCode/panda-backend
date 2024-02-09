@@ -22,7 +22,7 @@ public class CarretaDto implements Serializable {
     private String marca;
 
     @NotNull(message = "La capacidad de carga no puede ser nula.")
-    @DecimalMin(value = "0.1", inclusive = true, message = "La capacidad de carga debe ser mayor que 0.")
+    @DecimalMin(value = "10000", inclusive = true, message = "La capacidad de carga debe ser mayor o igual que 10,000.")
     private BigDecimal capacidadCarga;
 
     @NotNull(message = "El año de fabricación no puede ser nulo.")

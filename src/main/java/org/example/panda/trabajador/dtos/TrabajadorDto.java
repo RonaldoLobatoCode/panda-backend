@@ -1,13 +1,17 @@
 package org.example.panda.trabajador.dtos;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.example.panda.trabajador.entities.Cargo;
 import org.example.panda.trabajador.entities.EstadoCivil;
 import org.example.panda.trabajador.entities.Genero;
 import org.example.panda.trabajador.entities.Nacionalidad;
+import org.example.panda.utilities.EstadoEnum;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 @Data
 @AllArgsConstructor
@@ -26,7 +30,7 @@ public class TrabajadorDto implements Serializable {
 
     @Past(message = "La fecha de nacimiento debe ser en el pasado.")
     @NotNull(message = "La fecha no puede estar vacía")
-    private Date fechaNacimiento;
+    private Timestamp fechaNacimiento;
 
     @NotNull(message = "El género no puede estar vacío.")
     private Genero genero;
@@ -52,10 +56,15 @@ public class TrabajadorDto implements Serializable {
 
 
     @Past(message = "La fecha de ingreso debe ser en el pasado.")
-    @NotNull(message = "La fecha no puede estar vacía")
-    private Date fechaIngreso;
+    private Timestamp fechaIngreso;
 
     @NotEmpty(message = "El número de cuenta bancaria no puede estar vacío.")
     @Size(min = 14, max = 14, message = "La cuenta bancaria debe tener exactamente 14 caracteres.")
     private String numCuentaBancaria;
+    @NotNull(message = "El estado no puede estar vacío")
+    @Pattern(regexp = "activo|inactivo", message = "El estado debe ser 'activo' o 'inactivo'")
+    private String estadoEnum;
+
+    private Integer idUser;
 }
+

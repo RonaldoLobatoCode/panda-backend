@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.panda.utilities.EstadoEnum;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
@@ -30,7 +32,7 @@ public class Trabajador implements Serializable {
     private String numIdentidad;
 
     @Column(name = "fecha_nacimiento", nullable = false)
-    private Date fechaNacimiento;
+    private Timestamp fechaNacimiento;
 
     @ManyToOne(fetch = FetchType.LAZY) //carga perezosa, listar solo cuando lo necesitemos
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)//1. para que ignore lzy exeption ya que esta devolvera ese error porque le pusimos la propiedad de lazy./2.Para que la seccion api rest ignore la propiedad aserializar en una cadena de serialización
@@ -61,10 +63,21 @@ public class Trabajador implements Serializable {
     @JoinColumn(name = "cargo_id", nullable = false)
     private Cargo cargo;
 
-    @Column(name = "fecha_ingreso", nullable = false)
-    private Date fechaIngreso;
-
+    @Column(name = "fecha_ingreso")
+    private Timestamp fechaIngreso;
+    @PrePersist
+    protected void onCreate() {
+        // Verificar si la fecha de ingreso ya está establecida
+        if (this.fechaIngreso == null) {
+            // Si la fecha de ingreso no está establecida, establecerla como la fecha y hora actual
+            this.fechaIngreso = new Timestamp(System.currentTimeMillis());
+        }
+    }
     @Column(name = "num_cuenta_bancaria", length = 14)
     private String numCuentaBancaria;
-
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", nullable = false)
+    private EstadoEnum estadoEnum;
+    @Column(name = "id_user")
+    private Integer idUser;
 }

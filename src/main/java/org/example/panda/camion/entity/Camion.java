@@ -37,7 +37,7 @@ public class Camion implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @JoinColumn(name = "carreta_id", nullable = false)
+    @JoinColumn(name = "carreta_id")
     private Carreta carreta;
 
 }

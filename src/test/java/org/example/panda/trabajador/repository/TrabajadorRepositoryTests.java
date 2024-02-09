@@ -10,6 +10,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -51,11 +52,13 @@ public class TrabajadorRepositoryTests {
         Nacionalidad nacionalidad1= nacionalidadRepository.save(nacionalidad);
         fechaNacimiento = sdf.parse("2003-03-20");
         fechaIngreso=sdf.parse("2014-01-01");
+        Timestamp timestampFechaNacimiento = new Timestamp(fechaNacimiento.getTime());
+        Timestamp timestampFechaIngreso = new Timestamp(fechaIngreso.getTime());
         trabajador1 = Trabajador.builder()
                 .nombres("Rodrigo James")
                 .apellidos("Ganto Manzanedo")
                 .numIdentidad("987654321")
-                .fechaNacimiento(fechaNacimiento)
+                .fechaNacimiento(timestampFechaNacimiento)
                 .genero(genero1)
                 .estadoCivil(estadoCivil1)
                 .nacionalidad(nacionalidad1)
@@ -63,14 +66,14 @@ public class TrabajadorRepositoryTests {
                 .telefono("987654321")
                 .email("pantajefferson173@gmail.com")
                 .cargo(cargo1)
-                .fechaIngreso(fechaIngreso)
+                .fechaIngreso(timestampFechaIngreso)
                 .numCuentaBancaria("12345678912345")
                 .build();
         trabajador2 = Trabajador.builder()
                 .nombres("Carlos")
                 .apellidos("Gonzales")
                 .numIdentidad("73005607")
-                .fechaNacimiento(fechaNacimiento)
+                .fechaNacimiento(timestampFechaNacimiento)
                 .genero(genero1)
                 .estadoCivil(estadoCivil1)
                 .nacionalidad(nacionalidad1)
@@ -78,7 +81,7 @@ public class TrabajadorRepositoryTests {
                 .telefono("30889076")
                 .email("carlos@gmail.com")
                 .cargo(cargo1)
-                .fechaIngreso(fechaIngreso)
+                .fechaIngreso(timestampFechaIngreso)
                 .numCuentaBancaria("12345678912311")
                 .build();
     }

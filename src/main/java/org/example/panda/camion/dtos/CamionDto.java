@@ -34,7 +34,6 @@ public class CamionDto implements Serializable {
     @Size(min = 15, max = 15, message = "El número de placa debe tener exactamente 15 caracteres.")
     private String placa;
 
-    @NotNull(message = "El cargo no puede estar vacío.")
     private Carreta carreta;
 
 }
