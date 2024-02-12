@@ -9,6 +9,7 @@ import org.example.panda.conductor.services.IConductorService;
 import org.example.panda.exceptions.ResourceNotFoundException;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,8 +29,22 @@ public class  ConductorServiceImpl implements IConductorService {
 
     @Override
     public ConductorDto createConductor(ConductorDto conductorDto) {
-        return conductorEntityToDto(conductorRepository.save(conductorDtoToEntity(conductorDto)));
+        boolean existsTrabajador = conductorRepository.existsByTrabajadorId(conductorDto.getTrabajador().getId());
+        boolean existsCamion = conductorRepository.existsByCamionId(conductorDto.getCamion().getId());
+
+        if (existsTrabajador) {
+            throw new DataIntegrityViolationException("El trabajador ya está asignado a un conductor.");
+        }
+
+        if (existsCamion) {
+            throw new DataIntegrityViolationException("El camión ya está asignado a un conductor.");
+        }
+
+        Conductor conductorEntity = conductorDtoToEntity(conductorDto);
+        Conductor savedConductor = conductorRepository.save(conductorEntity);
+        return conductorEntityToDto(savedConductor);
     }
+
 
     @Override
     public ConductorResponse listConductor(int numeroDePagina, int medidaDePagina, String ordenarPor, String sortDir) {
