@@ -9,6 +9,7 @@ import org.example.panda.conductor.dtos.ConductorDto;
 import org.example.panda.conductor.dtos.ConductorResponse;
 import org.example.panda.conductor.services.IConductorService;
 import org.example.panda.utilities.AppConstants;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +37,15 @@ public class ConductorController {
     }
 
     @PostMapping
-    public ResponseEntity<ConductorDto> createConductor(@Valid @RequestBody ConductorDto conductorDto){
-        return new ResponseEntity<>(conductorService.createConductor(conductorDto), HttpStatus.CREATED);
+    public ResponseEntity<?> createConductor(@Valid @RequestBody ConductorDto conductorDto){
+        try{
+            ConductorDto createdConductor = conductorService.createConductor(conductorDto);
+            return new ResponseEntity<>(createdConductor, HttpStatus.CREATED);
+        }catch (DataIntegrityViolationException e){
+            return ResponseEntity.badRequest().body("Error : La entrada ya existe o viola una retriccion de unicidad.");
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body("Error interno del servidor" + e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
