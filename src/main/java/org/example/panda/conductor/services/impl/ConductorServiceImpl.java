@@ -72,15 +72,32 @@ public class  ConductorServiceImpl implements IConductorService {
     }
 
     @Override
+    @Override
     public ConductorDto updateConductor(Integer id, ConductorDto conductorDto) {
-        if(conductorDto.getId() == null || id.equals(conductorDto.getId())){
-            Conductor findConductor = conductorRepository.findById(id)
-                    .orElseThrow(()-> new ResourceNotFoundException("Conductor","id",id));
-            conductorDto.setId(findConductor.getId());
-            return conductorEntityToDto(conductorRepository.save(conductorDtoToEntity(conductorDto)));
+        boolean existsTrabajador = conductorRepository.existsByTrabajadorId(conductorDto.getTrabajador().getId());
+        boolean existsCamion = conductorRepository.existsByCamionId(conductorDto.getCamion().getId());
+
+        if (existsTrabajador) {
+            throw new DataIntegrityViolationException("El trabajador ya está asignado a un conductor.");
         }
-        throw new IllegalArgumentException("Existe una discrepancia entre el ID proporcionado en la URL y el ID del registro correspondiente.");
+
+        if (existsCamion) {
+            throw new DataIntegrityViolationException("El camión ya está asignado a un conductor.");
+        }
+
+        if (conductorDto.getId() == null || id.equals(conductorDto.getId())) {
+            Conductor existingConductor = conductorRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Conductor", "id", id));
+
+            conductorDto.setId(existingConductor.getId());
+
+            Conductor updatedConductor = conductorRepository.save(conductorDtoToEntity(conductorDto));
+            return conductorEntityToDto(updatedConductor);
+        } else {
+            throw new IllegalArgumentException("Existe una discrepancia entre el ID proporcionado en la URL y el ID del registro correspondiente.");
+        }
     }
+
 
     @Override
     public void deleteConductor(Integer id) {
