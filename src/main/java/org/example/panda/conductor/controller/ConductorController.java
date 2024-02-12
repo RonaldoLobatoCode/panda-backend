@@ -37,14 +37,15 @@ public class ConductorController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createConductor(@Valid @RequestBody ConductorDto conductorDto){
-        try{
+    public ResponseEntity<?> createConductor(@Valid @RequestBody ConductorDto conductorDto) {
+        try {
             ConductorDto createdConductor = conductorService.createConductor(conductorDto);
             return new ResponseEntity<>(createdConductor, HttpStatus.CREATED);
-        }catch (DataIntegrityViolationException e){
-            return ResponseEntity.badRequest().body("Error : La entrada ya existe o viola una retriccion de unicidad.");
-        }catch (Exception e){
-            return ResponseEntity.internalServerError().body("Error interno del servidor" + e.getMessage());
+        } catch (DataIntegrityViolationException e) {
+            String customMessage = generateCustomErrorMessage(e);
+            return ResponseEntity.badRequest().body(customMessage);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error interno del servidor: " + e.getMessage());
         }
     }
 
@@ -57,6 +58,16 @@ public class ConductorController {
     public ResponseEntity<String> deleteCarreta(@PathVariable("id") Integer id){
         conductorService.deleteConductor(id);
         return new ResponseEntity<>("Conductor eliminado con exito", HttpStatus.NO_CONTENT);
+    }
+
+    private String generateCustomErrorMessage(DataIntegrityViolationException e) {
+        if (e.getMessage().contains("El trabajador ya está asignado a un conductor.")) {
+            return "Error: El trabajador seleccionado ya está asignado a otro conductor.";
+        } else if (e.getMessage().contains("El camión ya está asignado a un conductor.")) {
+            return "Error: El camión seleccionado ya está asignado a otro conductor.";
+        } else {
+            return "Error: La entrada ya existe o viola una restricción de unicidad.";
+        }
     }
 }
 
