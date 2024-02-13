@@ -28,7 +28,7 @@ public class CamionDto implements Serializable {
     @NotNull(message = "El año de fabricación no puede ser nulo.")
     @Min(value = 1940, message = "El año de fabricación debe ser mayor o igual a 1940.")
     @Max(value = 2025, message = "El año de fabricación debe ser menor o igual a 2025.")
-    private int añoFabricacion;
+    private int anoFabricacion;
 
     @NotEmpty(message = "El número de placa no puede estar vacío.")
     @Size(min = 15, max = 15, message = "El número de placa debe tener exactamente 15 caracteres.")

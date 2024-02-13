@@ -1,6 +1,8 @@
 package org.example.panda.carreta.services.impl;
 
 import lombok.AllArgsConstructor;
+import org.example.panda.camion.dtos.CamionDto;
+import org.example.panda.camion.entity.Camion;
 import org.example.panda.carreta.dtos.CarretaDto;
 import org.example.panda.carreta.dtos.CarretaResponse;
 import org.example.panda.carreta.entity.Carreta;
@@ -27,6 +29,7 @@ public class CarretaServiceImpl implements ICarretaService {
 
     @Override
     public CarretaDto createCarreta(CarretaDto carretaDto) {
+        validarPlaca(carretaDto);
         return carretaEntityToDto(carretaRepository.save(carretaDtoToEntity(carretaDto)));
     }
 
@@ -59,6 +62,7 @@ public class CarretaServiceImpl implements ICarretaService {
     @Override
     public CarretaDto updateCarreta(Integer id, CarretaDto carretaDto) {
         if(carretaDto.getId() == null || id.equals(carretaDto.getId())){
+            validarPlaca(carretaDto, id);
             Carreta findCarreta = carretaRepository.findById(id)
                     .orElseThrow(()-> new ResourceNotFoundException("Carreta","id",id));
             carretaDto.setId(findCarreta.getId());
@@ -81,6 +85,22 @@ public class CarretaServiceImpl implements ICarretaService {
 
     private Carreta carretaDtoToEntity(CarretaDto carretaDto){
         return modelMapper.map(carretaDto, Carreta.class);
+    }
+    public void validarPlaca( CarretaDto carretaDto, Integer id){
+        List<Carreta> camiones = carretaRepository.findAll();
+        for(Carreta c : camiones){
+            if(c.getPlaca().equals(carretaDto.getPlaca()) && !c.getId().equals(id)) {
+                throw new IllegalArgumentException("Lamentamos informarle que la placa ingresada ya está registrada en nuestro sistema. Por favor, verifique y proporcione un número de placa único.");
+            }
+        }
+    }
+    public void validarPlaca(CarretaDto carretaDto){
+        List<Carreta> camiones = carretaRepository.findAll();
+        for(Carreta c : camiones){
+            if(c.getPlaca().equals(carretaDto.getPlaca())) {
+                throw new IllegalArgumentException("Lamentamos informarle que la placa ingresada ya está registrada en nuestro sistema. Por favor, verifique y proporcione un número de placa único.");
+            }
+        }
     }
 }
 

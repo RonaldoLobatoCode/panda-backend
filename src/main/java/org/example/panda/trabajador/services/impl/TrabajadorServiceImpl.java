@@ -1,14 +1,15 @@
 package org.example.panda.trabajador.services.impl;
 
-import lombok.AllArgsConstructor;
 import org.example.panda.exceptions.ResourceNotFoundException;
+import org.example.panda.feignClient.ReniecClient;
+import org.example.panda.feignClient.response.ReniecResponse;
 import org.example.panda.trabajador.dtos.TrabajadorDto;
 import org.example.panda.trabajador.dtos.TrabajadorResponse;
 import org.example.panda.trabajador.entities.Trabajador;
 import org.example.panda.trabajador.repositories.TrabajadorRepository;
 import org.example.panda.trabajador.services.ITrabajadorService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,12 +26,14 @@ public class TrabajadorServiceImpl implements ITrabajadorService {
 
     private final ModelMapper modelMapper;
     private final TrabajadorRepository trabajadorRepository;
-
-    public TrabajadorServiceImpl(ModelMapper modelMapper, TrabajadorRepository trabajadorRepository) {
+    private final ReniecClient reniecClient;
+    public TrabajadorServiceImpl(ModelMapper modelMapper, TrabajadorRepository trabajadorRepository, ReniecClient reniecClient) {
         this.modelMapper = modelMapper;
         this.trabajadorRepository = trabajadorRepository;
+        this.reniecClient = reniecClient;
     }
-
+    @Value("${token.api}")
+    private String tokenApi;
     @Transactional
     @Override
     public TrabajadorDto createTrabajador(TrabajadorDto trabajadorDto) {
@@ -63,6 +67,17 @@ public class TrabajadorServiceImpl implements ITrabajadorService {
         Trabajador trabajador=trabajadorRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Trabajador", "id", id));
        return trabajadorEntityToDto(trabajador);
     }
+    @Override
+    public ReniecResponse getInfoReniec(String numero) {
+        ReniecResponse response=getExecution(numero);
+        if(response != null){
+            return response;
+        } else {
+            throw new IllegalArgumentException("el dni no está disponible!");
+        }
+    }
+
+
     @Transactional
     @Override
     public TrabajadorDto updateTrabajador(Integer id, TrabajadorDto trabajadorDto) {
@@ -81,6 +96,10 @@ public class TrabajadorServiceImpl implements ITrabajadorService {
         Trabajador trabajador=trabajadorRepository.findById(Id)
                 .orElseThrow(()->new ResourceNotFoundException("Trabajador", "id", Id));
         trabajadorRepository.delete(trabajador);
+    }
+    public ReniecResponse getExecution(String numero){
+        String authorization = "Bearer " + tokenApi;
+        return reniecClient.getInfo(numero, authorization);
     }
     /*AQUI HACEMOS USO DE ModelMapper PARA AHORRAR MUCHAS LINEAS DE CODIGO, PERO DEJAREMOS COMENTADO LO QUE HABIAMOS HECHO ANTES A MODO DE PRÁCTICA*/
     private TrabajadorDto trabajadorEntityToDto(Trabajador trabajador){

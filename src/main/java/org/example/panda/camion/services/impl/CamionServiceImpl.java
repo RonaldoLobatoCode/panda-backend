@@ -71,7 +71,7 @@ public class CamionServiceImpl implements ICamionService {
             // Actualiza solo los campos que se pueden modificar
             existingCamion.setMarca(camionDto.getMarca());
             existingCamion.setModelo(camionDto.getModelo());
-            existingCamion.setAñoFabricacion(camionDto.getAñoFabricacion());
+            existingCamion.setAnoFabricacion(camionDto.getAnoFabricacion());
             existingCamion.setPlaca(camionDto.getPlaca());
 
             // No actualiza la relación carreta

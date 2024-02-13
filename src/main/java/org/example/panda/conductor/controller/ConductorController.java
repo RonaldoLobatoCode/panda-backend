@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path = "api/conductores")
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class ConductorController {
 
     private final IConductorService conductorService;
