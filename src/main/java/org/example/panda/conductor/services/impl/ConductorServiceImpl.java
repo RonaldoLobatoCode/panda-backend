@@ -72,7 +72,6 @@ public class  ConductorServiceImpl implements IConductorService {
     }
 
     @Override
-    @Override
     public ConductorDto updateConductor(Integer id, ConductorDto conductorDto) {
         boolean existsTrabajador = conductorRepository.existsByTrabajadorId(conductorDto.getTrabajador().getId());
         boolean existsCamion = conductorRepository.existsByCamionId(conductorDto.getCamion().getId());
