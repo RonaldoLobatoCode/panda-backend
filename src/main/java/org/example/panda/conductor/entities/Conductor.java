@@ -12,7 +12,10 @@ import org.example.panda.trabajador.entities.Trabajador;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "conductores_camion")
+@Table(name = "conductores_camion", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"trabajador_id"}),
+        @UniqueConstraint(columnNames = {"camion_id"})
+})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
