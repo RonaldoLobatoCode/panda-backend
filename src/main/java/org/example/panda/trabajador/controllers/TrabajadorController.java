@@ -65,7 +65,7 @@ public class TrabajadorController {
         return new ResponseEntity<>("Trabajador eliminado con éxito", HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/reportes/last")
+    @GetMapping("/trabajadores/generar-reporte")
     public void generarPDF(HttpServletResponse response) {
         response.setHeader("Content-Disposition", "attachment; filename=\"reporte.pdf\";");
         response.setContentType("application/pdf");
@@ -75,15 +75,12 @@ public class TrabajadorController {
             final File logoEmpresa = ResourceUtils.getFile("classpath:images/logoEmpresa.jpg");
             final File imagenAlternativa = ResourceUtils.getFile("classpath:images/imagenAlternativa.png");
 
-            // Crear un mapa para almacenar los valores de los parámetros
             Map<String, Object> parameters = new HashMap<>();
-            parameters.put("logoEmpresa", new FileInputStream(logoEmpresa)); // Reemplaza "parametro1" y "valor1" con tus nombres de parámetro y valores
+            parameters.put("logoEmpresa", new FileInputStream(logoEmpresa));
             parameters.put("imagenAlternativa", new FileInputStream(imagenAlternativa));
 
-            // Llenar el informe Jasper con los parámetros proporcionados
             JasperPrint jasperPrint = JasperFillManager.fillReport(ru, parameters, dataSource.getConnection());
 
-            // Exportar el informe a PDF y enviarlo al navegador
             OutputStream outStream = response.getOutputStream();
             JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
         } catch (Exception e) {
