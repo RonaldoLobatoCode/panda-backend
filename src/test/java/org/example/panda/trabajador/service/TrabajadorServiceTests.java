@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import org.example.panda.exceptions.ResourceNotFoundException;
+import org.example.panda.feignClient.ReniecClient;
 import org.example.panda.trabajador.dtos.TrabajadorDto;
 import org.example.panda.trabajador.dtos.TrabajadorResponse;
 import org.example.panda.trabajador.entities.*;
@@ -58,10 +59,11 @@ public class TrabajadorServiceTests {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     @Mock
     private ModelMapper modelMapper;
-
+    @Mock
+    private ReniecClient reniecClient;
     @BeforeEach
     void setUp() {
-        trabajadorService = new TrabajadorServiceImpl(modelMapper, trabajadorRepository);
+        trabajadorService = new TrabajadorServiceImpl(modelMapper, trabajadorRepository, reniecClient);
     }
 
     @BeforeEach

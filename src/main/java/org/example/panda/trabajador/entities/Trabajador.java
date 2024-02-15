@@ -77,7 +77,7 @@ public class Trabajador implements Serializable {
     private String numCuentaBancaria;
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
-    private EstadoEnum estadoEnum;
+    private EstadoEnum estado;
     @Column(name = "id_user")
     private Integer idUser;
 }

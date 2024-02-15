@@ -27,7 +27,8 @@ public class Carreta implements Serializable {
 
     @Column(name = "capacidad_carga", nullable = false)
     private BigDecimal capacidadCarga;
-
+    @Column(name = "placa", nullable = false)
+    private String placa;
     @Column(name = "año_fabricacion", nullable = false)
-    private int añoFabricacion;
+    private int anoFabricacion;
 }

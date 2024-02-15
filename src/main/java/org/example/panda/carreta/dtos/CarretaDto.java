@@ -24,9 +24,11 @@ public class CarretaDto implements Serializable {
     @NotNull(message = "La capacidad de carga no puede ser nula.")
     @DecimalMin(value = "10000", inclusive = true, message = "La capacidad de carga debe ser mayor o igual que 10,000.")
     private BigDecimal capacidadCarga;
-
+    @NotNull(message = "La placa no puede ser nula")
+    @Size(min = 15, max = 15, message = "El número de placa debe tener exactamente 15 caracteres.")
+    private String placa;
     @NotNull(message = "El año de fabricación no puede ser nulo.")
     @Min(value = 1960, message = "El año de fabricación debe ser mayor o igual a 1960.")
     @Max(value = 2025, message = "El año de fabricación debe ser menor o igual a 2025.")
-    private int añoFabricacion;
+    private int anoFabricacion;
 }

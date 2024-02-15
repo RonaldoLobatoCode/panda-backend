@@ -3,6 +3,8 @@ package org.example.panda.trabajador.controllers;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import net.sf.jasperreports.engine.*;
+
+import org.example.panda.feignClient.response.ReniecResponse;
 import org.example.panda.trabajador.dtos.TrabajadorDto;
 import org.example.panda.trabajador.dtos.TrabajadorResponse;
 import org.example.panda.trabajador.services.ITrabajadorService;
@@ -25,6 +27,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1")
+@CrossOrigin(origins = "http://localhost:5173")
 public class TrabajadorController {
     private final ITrabajadorService trabajadorService;
 
@@ -49,7 +52,10 @@ public class TrabajadorController {
     public ResponseEntity<TrabajadorDto> findTrabajadorById(@PathVariable("id") Integer id){
         return new ResponseEntity<>(trabajadorService.listTrabajadorById(id), HttpStatus.OK);
     }
-
+    @GetMapping("trabajador/dni/{numero}")
+    public ReniecResponse getInfoReniec(@PathVariable String numero){
+        return trabajadorService.getInfoReniec(numero);
+    }
     @PostMapping("trabajador")
     public ResponseEntity<TrabajadorDto> createTrabajadores(@Valid @RequestBody TrabajadorDto trabajadorDto){
         return new ResponseEntity<>(trabajadorService.createTrabajador(trabajadorDto), HttpStatus.CREATED);

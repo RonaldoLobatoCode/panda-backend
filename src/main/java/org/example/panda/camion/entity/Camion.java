@@ -30,7 +30,7 @@ public class Camion implements Serializable {
     private String modelo;
 
     @Column(name = "año_fabricacion", nullable = false)
-    private int añoFabricacion;
+    private int anoFabricacion;
 
     @Column(name = "placa", unique = true, nullable = false, length = 15)
     private String placa;

@@ -19,7 +19,7 @@ import java.util.Date;
 @Builder
 public class TrabajadorDto implements Serializable {
     private Integer id;
-    @NotEmpty(message = "El nombre no puede estar vacio o nulo.")
+    @NotBlank(message = "El nombre no puede estar vacio o nulo.")
     @Size(min = 2, message = "El nombre tiene que tener como mínimo 2 caracteres.")
     private String nombres;
     @NotEmpty(message = "El apellido no puede estar vacio o nulo.")
@@ -41,7 +41,7 @@ public class TrabajadorDto implements Serializable {
     @NotNull(message = "La nacionalidad no puede estar vacía.")
     private Nacionalidad nacionalidad;
 
-    @NotEmpty(message = "La dirección de residencia no puede estar vacía.")
+    @NotNull(message = "La dirección de residencia no puede estar vacía.")
     @Size(min = 3,message = "La dirección tiene que tener más de 3 caracteres.")
     private String direccionResidencia;
 
@@ -49,6 +49,7 @@ public class TrabajadorDto implements Serializable {
     private String telefono;
 
     @Email(message = "El formato del correo electrónico no es válido.")
+    @NotBlank(message = "El email no puede estar vacío")
     private String email;
 
     @NotNull(message = "El cargo no puede estar vacío.")
@@ -63,7 +64,7 @@ public class TrabajadorDto implements Serializable {
     private String numCuentaBancaria;
     @NotNull(message = "El estado no puede estar vacío")
     @Pattern(regexp = "activo|inactivo", message = "El estado debe ser 'activo' o 'inactivo'")
-    private String estadoEnum;
+    private String estado;
 
     private Integer idUser;
 }
