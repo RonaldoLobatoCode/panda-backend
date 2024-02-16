@@ -1,15 +1,28 @@
 package org.example.panda.trabajador.controllers;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import net.sf.jasperreports.engine.*;
+
 import org.example.panda.feignClient.response.ReniecResponse;
 import org.example.panda.trabajador.dtos.TrabajadorDto;
 import org.example.panda.trabajador.dtos.TrabajadorResponse;
 import org.example.panda.trabajador.services.ITrabajadorService;
 import org.example.panda.utilities.AppConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.sql.DataSource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -17,6 +30,12 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:5173")
 public class TrabajadorController {
     private final ITrabajadorService trabajadorService;
+
+    @Autowired
+    private ResourceLoader resourceLoader;
+
+    @Autowired
+    private DataSource dataSource;
 
     public TrabajadorController(ITrabajadorService trabajadorService) {
         this.trabajadorService = trabajadorService;
@@ -51,4 +70,28 @@ public class TrabajadorController {
         trabajadorService.deleteTrabajador(id);
         return new ResponseEntity<>("Trabajador eliminado con éxito", HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/trabajadores/generar-reporte")
+    public void generarPDF(HttpServletResponse response) {
+        response.setHeader("Content-Disposition", "attachment; filename=\"reporte.pdf\";");
+        response.setContentType("application/pdf");
+        try {
+            String ru = resourceLoader.getResource("classpath:panda.jasper").getURI().getPath();
+
+            final File logoEmpresa = ResourceUtils.getFile("classpath:images/logoEmpresa.jpg");
+            final File imagenAlternativa = ResourceUtils.getFile("classpath:images/imagenAlternativa.png");
+
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("logoEmpresa", new FileInputStream(logoEmpresa));
+            parameters.put("imagenAlternativa", new FileInputStream(imagenAlternativa));
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(ru, parameters, dataSource.getConnection());
+
+            OutputStream outStream = response.getOutputStream();
+            JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
