@@ -1,9 +1,4 @@
 package org.example.panda.trabajador.services.impl;
-
- main
-
-
- main
 import org.example.panda.exceptions.ResourceNotFoundException;
 import org.example.panda.feignClient.ReniecClient;
 import org.example.panda.feignClient.response.ReniecResponse;
@@ -13,10 +8,8 @@ import org.example.panda.trabajador.entities.Trabajador;
 import org.example.panda.trabajador.repositories.TrabajadorRepository;
 import org.example.panda.trabajador.services.ITrabajadorService;
 import org.modelmapper.ModelMapper;
- main
 
 import org.springframework.beans.factory.annotation.Value;
- main
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
