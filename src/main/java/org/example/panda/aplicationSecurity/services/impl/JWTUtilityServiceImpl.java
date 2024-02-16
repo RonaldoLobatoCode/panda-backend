@@ -5,6 +5,11 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import lombok.AllArgsConstructor;
+import org.example.panda.aplicationSecurity.persistence.entities.ERole;
+import org.example.panda.aplicationSecurity.persistence.entities.Role;
+import org.example.panda.aplicationSecurity.persistence.entities.User;
+import org.example.panda.aplicationSecurity.persistence.repositories.UserRepository;
 import org.example.panda.aplicationSecurity.services.IJWTUtilityService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -23,8 +28,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.text.ParseException;
-import java.util.Base64;
-import java.util.Date;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /*CREACIÓN DE JWT Y LA VALIDACIÓN DEL JWT*/
 @Service
@@ -35,21 +40,32 @@ public class JWTUtilityServiceImpl implements IJWTUtilityService {
 
     @Value("classpath:jwtKeys/public_key.pem")
     private Resource publicKeyResource;
+    private final UserRepository userRepository;
+
+    public JWTUtilityServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /*2 metodos publicos: para generar el JWT Y el otro para validar que el JWT que nos pasan es correcto*/
     //METODO PARA GENERAR EL JWT
     @Override
     public String generateJWT(Long userId) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, JOSEException {
         PrivateKey privateKey= loadPrivateKey(privateKeyResource);
-
+        Optional<User> user = userRepository.findById(userId);
+        Set<Role> roles = user.map(User::getRoles).orElse(Collections.emptySet());
         JWSSigner signer = new RSASSASigner(privateKey); //firmar la informacion
 
         Date now= new Date();
-        JWTClaimsSet claimsSet= new JWTClaimsSet.Builder() //definimos los claims (payload)
+        JWTClaimsSet.Builder claimsBuilder = new JWTClaimsSet.Builder()
                 .subject(userId.toString())
                 .issueTime(now)
-                .expirationTime(new Date(now.getTime() + 14400000)) //+4horas
-                .build();
+                .expirationTime(new Date(now.getTime() + 3600000));
+
+        List<ERole> roleNames = roles.stream().map(Role::getRole).collect(Collectors.toList());
+        boolean isAdmin= roleNames.stream().anyMatch(r->r.equals(ERole.ADMIN));
+        claimsBuilder.claim("roles", roleNames);
+        claimsBuilder.claim("isAdmin", isAdmin);
+        JWTClaimsSet claimsSet = claimsBuilder.build();
 
         SignedJWT signedJWT= new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), claimsSet); //HEADER
         signedJWT.sign(signer); //le pasamos la firma de la privateKey

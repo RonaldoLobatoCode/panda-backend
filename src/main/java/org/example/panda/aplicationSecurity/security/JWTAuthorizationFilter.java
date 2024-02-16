@@ -10,6 +10,8 @@ import org.example.panda.aplicationSecurity.services.IJWTUtilityService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,7 +19,10 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
@@ -39,10 +44,14 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
         try {
             JWTClaimsSet claims= jwtUtilityService.parseJWT(token);
-            UsernamePasswordAuthenticationToken authenticationToken=
-                    new UsernamePasswordAuthenticationToken(claims.getSubject(), null, Collections.emptyList());
+            String userId = claims.getSubject();
+            List<String> roles = claims.getStringListClaim("roles");
+            Collection<SimpleGrantedAuthority> authorities = roles.stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
 
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(userId, null, authorities);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         } catch (InvalidKeySpecException e) {
