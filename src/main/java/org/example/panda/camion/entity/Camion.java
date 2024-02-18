@@ -11,7 +11,7 @@ import org.example.panda.carreta.entity.Carreta;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "camiones", uniqueConstraints = {@UniqueConstraint(columnNames = {"placa"})})
+@Table(name = "camiones", uniqueConstraints = { @UniqueConstraint(columnNames = { "placa" }) })
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
