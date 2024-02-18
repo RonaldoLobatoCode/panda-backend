@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface GuiaTransportistaRepository extends JpaRepository<GuiaTransportista, Integer> {
 
-    boolean existsByIdTrabajador(Integer trabajadorId);
+    boolean existsByTrabajadorId(Integer trabajadorId);
 }

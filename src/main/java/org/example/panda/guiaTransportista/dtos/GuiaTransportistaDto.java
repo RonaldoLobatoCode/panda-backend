@@ -39,12 +39,10 @@ public class GuiaTransportistaDto implements Serializable {
 
     @NotNull(message = "La fecha de emisión no puede estar vacía.")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Future(message = "La fecha de emisión debe ser en el futuro.")
     private Timestamp fechaEmision;
 
     @NotNull(message = "La fecha de traslado no puede estar vacía.")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Future(message = "La fecha de traslado debe ser en el futuro.")
     private Date fechaTraslado;
 
     @NotBlank(message = "El RUC del remitente no puede estar vacío.")

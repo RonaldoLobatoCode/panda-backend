@@ -56,7 +56,7 @@ public class GuiaTransportista implements Serializable {
     @Column(name = "remitente_ruc", nullable = false)
     private String remitenteRuc;
 
-    @Column(name = "remitente_razonSocial", nullable = false)
+    @Column(name = "remitente_razonsocial", nullable = false)
     private String remitenteRazonSocial;
 
     @Column(name = "remitente_direccion")
@@ -65,7 +65,7 @@ public class GuiaTransportista implements Serializable {
     @Column(name = "destinatario_ruc", nullable = false)
     private String destinatarioRuc;
 
-    @Column(name = "destinatario_razonSocial", nullable = false)
+    @Column(name = "destinatario_razonsocial", nullable = false)
     private String destinatarioRazonSocial;
 
     @Column(name = "destinatario_direccion")

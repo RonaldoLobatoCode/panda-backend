@@ -31,7 +31,7 @@ public class GuiaTransportistaImpl implements IGuiaTransportistaService {
     public GuiaTransportistaDto createGuiaTransportista(GuiaTransportistaDto guiaTransportistaDto) {
 
         boolean existsTrabajador = guiaTransportistaRepository
-                .existsByIdTrabajador(guiaTransportistaDto.getTrabajador().getId());
+                .existsByTrabajadorId(guiaTransportistaDto.getTrabajador().getId());
 
         if (existsTrabajador) {
             throw new DataIntegrityViolationException("El trabajador ya está asignado a una guia.");
@@ -80,7 +80,7 @@ public class GuiaTransportistaImpl implements IGuiaTransportistaService {
         // TODO Auto-generated method stub
 
         boolean existsTrabajador = guiaTransportistaRepository
-                .existsByIdTrabajador(guiaTransportistaDto.getTrabajador().getId());
+                .existsByTrabajadorId(guiaTransportistaDto.getTrabajador().getId());
 
         if (existsTrabajador) {
             throw new DataIntegrityViolationException("El trabajador ya está asignado a una guia.");
