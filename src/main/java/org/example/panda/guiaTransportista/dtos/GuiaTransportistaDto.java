@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import org.example.panda.trabajador.entities.Trabajador;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
@@ -18,6 +19,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 @NoArgsConstructor
 @Builder
 public class GuiaTransportistaDto implements Serializable {
+
+    private Integer id;
 
     @NotBlank(message = "La serie de la guía no puede estar vacía.")
     @Size(max = 10, message = "La serie de la guía debe tener como máximo 10 caracteres.")
@@ -87,5 +90,5 @@ public class GuiaTransportistaDto implements Serializable {
     private String rucPagadorDelFlete;
 
     @NotNull(message = "El ID del trabajador no puede estar vacío.")
-    private Integer idTrabajador;
+    private Trabajador trabajador;
 }
