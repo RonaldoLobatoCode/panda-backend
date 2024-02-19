@@ -98,7 +98,7 @@ public class CarretaServiceImpl implements ICarretaService {
         List<Carreta> camiones = carretaRepository.findAll();
         for(Carreta c : camiones){
             if(c.getPlaca().equals(carretaDto.getPlaca())) {
-                throw new IllegalArgumentException("Lamentamos informarle que la placa ingresada ya está registrada en nuestro sistema. Por favor, verifique y proporcione un número de placa único.");
+                throw new IllegalArgumentException("La placa ingresada ya está registrada.");
             }
         }
     }

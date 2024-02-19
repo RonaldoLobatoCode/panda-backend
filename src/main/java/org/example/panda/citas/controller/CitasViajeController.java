@@ -14,13 +14,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "api/citas-viajes")
+@RequestMapping(path = "/api/v1")
 @AllArgsConstructor
 public class CitasViajeController {
 
     private final ICitasViajeService citasViajeService;
 
-    @GetMapping
+    @GetMapping("/citas")
     public ResponseEntity<CitasViajeResponse> listCitasViajes(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.NUMERO_PAG_POR_DEFECTO, required = false) int numeroDePagina,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.MEDIDA_PAG_POR_DEFECTO, required = false) int medidaDePagina,
@@ -30,22 +30,22 @@ public class CitasViajeController {
         return ResponseEntity.ok(citasViajeResponse);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/cita/{id}")
     public ResponseEntity<CitasViajeDto> findCitasViajeById(@PathVariable("id") Integer id){
         return new ResponseEntity<>(citasViajeService.listCitasViajeById(id), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/cita")
     public ResponseEntity<CitasViajeDto> createCitasViaje(@Valid @RequestBody CitasViajeDto citasViajeDto){
         return new ResponseEntity<>(citasViajeService.createCitasViaje(citasViajeDto), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/cita/{id}")
     public ResponseEntity<CitasViajeDto> updateCitasViaje(@Valid @RequestBody CitasViajeDto citasViajeDto, @PathVariable("id") Integer id){
         return new ResponseEntity<>(citasViajeService.updateCitasViaje(id,citasViajeDto), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/cita/{id}")
     public ResponseEntity<String> deleteCitasViaje(@PathVariable("id") Integer id){
         citasViajeService.deleteCitasViaje(id);
         return new ResponseEntity<>("La reservación de cita de viaje fue eliminado con exito", HttpStatus.NO_CONTENT);

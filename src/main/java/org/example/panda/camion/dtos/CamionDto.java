@@ -17,11 +17,11 @@ public class CamionDto implements Serializable {
 
     private Integer id;
 
-    @NotEmpty(message = "La marca no puede estar vacio o nulo")
+    @NotNull(message = "La marca no puede estar vacio o nulo")
     @Size(min = 2, max = 50, message = "La marca tiene que tener como mínimo 2 caracteres y como máximo 50 caracteres.")
     private String marca;
 
-    @NotEmpty(message = "El modelo no puede estar vacio o nulo")
+    @NotNull(message = "El modelo no puede estar vacio o nulo")
     @Size(min = 2, max = 50, message = "EL modelo tiene que tener como mínimo 2 caracteres y como máximo 50 caracteres.")
     private String modelo;
 

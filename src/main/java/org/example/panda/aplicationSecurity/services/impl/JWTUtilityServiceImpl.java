@@ -13,8 +13,9 @@ import org.example.panda.aplicationSecurity.persistence.repositories.UserReposit
 import org.example.panda.aplicationSecurity.services.IJWTUtilityService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
+import org.example.panda.exceptions.PandaAppException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -83,7 +84,7 @@ public class JWTUtilityServiceImpl implements IJWTUtilityService {
         JWTClaimsSet claimsSet= signedJWT.getJWTClaimsSet();
 
         if(claimsSet.getExpirationTime().before(new Date())){
-            throw new JOSEException("Expired token");
+            throw new PandaAppException(HttpStatus.UNAUTHORIZED, "Expired token");
         }
 
         return claimsSet;
