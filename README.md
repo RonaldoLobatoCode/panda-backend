@@ -1,5 +1,5 @@
 # Documentación del Proyecto Backend para Panda, Empresa de Transportes
-
+![Iconos de Tecnologías](Panda.png)
 ## Descripción del Proyecto
 Este proyecto backend desarrollado en Spring Boot está diseñado para gestionar registros de trabajadores, conductores, camiones, carretas, facturas, guias de transportista, citas y usuarios para una empresa de transportes. Ofrece un conjunto de funcionalidades que incluyen seguridad, transacción de datos, conexión a servicios externos de la Reniec y Sunat, documentación con Swagger, control de excepciones, acceso a base de datos PostgreSQL, pruebas unitarias y generación de reportes en formato PDF.
 
