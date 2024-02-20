@@ -12,14 +12,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "api/carretas")
+@RequestMapping(path = "/api/v1")
 @AllArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173")
 public class CarretaController {
 
     private final ICarretaService carretaService;
 
-    @GetMapping
+    @GetMapping("/carretas")
     public ResponseEntity<CarretaResponse> listCarretas(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.NUMERO_PAG_POR_DEFECTO, required = false) int numeroDePagina,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.MEDIDA_PAG_POR_DEFECTO, required = false) int medidaDePagina,
@@ -29,22 +29,22 @@ public class CarretaController {
         return ResponseEntity.ok(carretaResponse);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/carreta/{id}")
     public ResponseEntity<CarretaDto> findCarretaByID(@PathVariable("id") Integer id) {
         return new ResponseEntity<>(carretaService.listCarretaById(id), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/carreta")
     public ResponseEntity<CarretaDto> createCarreta(@Valid @RequestBody CarretaDto carretaDto){
         return new ResponseEntity<>(carretaService.createCarreta(carretaDto), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/carreta/{id}")
     public ResponseEntity<CarretaDto> updateCarreta(@Valid @RequestBody CarretaDto carretaDto, @PathVariable("id") Integer id){
         return new ResponseEntity<>(carretaService.updateCarreta(id,carretaDto), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/carreta/{id}")
     public ResponseEntity<String> deleteCarreta(@PathVariable("id") Integer id){
         carretaService.deleteCarreta(id);
         return new ResponseEntity<>("Carretera eliminado con exito", HttpStatus.NO_CONTENT);

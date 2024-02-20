@@ -7,6 +7,7 @@ import org.example.panda.camion.dtos.CamionResponse;
 import org.example.panda.camion.entity.Camion;
 import org.example.panda.camion.repository.CamionRepository;
 import org.example.panda.camion.services.ICamionService;
+import org.example.panda.carreta.repository.CarretaRepository;
 import org.example.panda.exceptions.ResourceNotFoundException;
 
 import org.modelmapper.ModelMapper;
@@ -26,7 +27,7 @@ public class CamionServiceImpl implements ICamionService {
     private final ModelMapper modelMapper;
 
     private final CamionRepository camionRepository;
-
+    private final CarretaRepository carretaRepository;
     @Override
     public CamionDto createCamion(CamionDto camionDto) {
         validarPlaca(camionDto);
@@ -103,16 +104,22 @@ public class CamionServiceImpl implements ICamionService {
         List<Camion> camiones = camionRepository.findAll();
         for(Camion c : camiones){
             if(c.getPlaca().equals(camionDto.getPlaca()) && !c.getId().equals(id)) {
-                throw new IllegalArgumentException("Lamentamos informarle que la placa ingresada ya está registrada en nuestro sistema. Por favor, verifique y proporcione un número de placa único.");
+                throw new IllegalArgumentException("La placa ingresada ya existe en nuestro sistema.");
             }
+        }
+        if(carretaRepository.findById(camionDto.getCarreta().getId()).isEmpty()){
+            throw new IllegalArgumentException("El id no existe en la base de datos.");
         }
     }
     public void validarPlaca(CamionDto camionDto){
         List<Camion> camiones = camionRepository.findAll();
         for(Camion c : camiones){
             if(c.getPlaca().equals(camionDto.getPlaca())) {
-                throw new IllegalArgumentException("Lamentamos informarle que la placa ingresada ya está registrada en nuestro sistema. Por favor, verifique y proporcione un número de placa único.");
+                throw new IllegalArgumentException("La placa ingresada ya existe en nuestro sistema.");
             }
+        }
+        if(carretaRepository.findById(camionDto.getCarreta().getId()).isEmpty()){
+            throw new IllegalArgumentException("El id no existe en la base de datos.");
         }
     }
 }

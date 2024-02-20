@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.panda.aplicationSecurity.services.IJWTUtilityService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Configuration
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
     @Autowired
     IJWTUtilityService jwtUtilityService;
@@ -52,13 +53,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(userId, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        } catch (InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        } catch (JOSEException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | ParseException | JOSEException e) {
             throw new RuntimeException(e);
         }
 

@@ -1,7 +1,10 @@
 package org.example.panda.aplicationSecurity.services.impl;
 
 import lombok.AllArgsConstructor;
+import org.example.panda.aplicationSecurity.persistence.entities.ERole;
+import org.example.panda.aplicationSecurity.persistence.entities.Role;
 import org.example.panda.aplicationSecurity.persistence.entities.User;
+import org.example.panda.aplicationSecurity.persistence.repositories.RoleRepository;
 import org.example.panda.aplicationSecurity.persistence.repositories.UserRepository;
 import org.example.panda.aplicationSecurity.services.IAuthService;
 import org.example.panda.aplicationSecurity.services.IJWTUtilityService;
@@ -15,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -26,7 +26,7 @@ public class AuthServiceImpl implements IAuthService {
     private final ModelMapper modelMapper;
 
     private final UserRepository userRepository;
-
+    private final RoleRepository roleRepository;
     private final IJWTUtilityService jwtUtilityService;
 
     @Override
@@ -41,8 +41,9 @@ public class AuthServiceImpl implements IAuthService {
             // verificar la contraseña
             if (verifyPassword(loginDTO.getPassword(), user.get().getPassword())) {
                 jwt.put("jwt", jwtUtilityService.generateJWT(user.get().getId()));
-            } else {
-                jwt.put("error", "Authentication failed");
+                jwt.put("username",loginDTO.getUsername());
+            } else{
+                jwt.put("error","Authentication failed");
             }
             return jwt;
         } catch (Exception e) {
@@ -61,9 +62,15 @@ public class AuthServiceImpl implements IAuthService {
                     return responseDTO;
                 }
             }
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);// encriptamos la contraseña
-            userDto.setPassword(encoder.encode(userDto.getPassword())); // y se ña asignamos al usuario
-            userRepository.save(dtoToEntity(userDto));
+            Set<Role> roles =getRoles(dtoToEntity(userDto));
+            userDto.setRoles(roles);
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);//encriptamos la contraseña
+            userDto.setPassword(encoder.encode(userDto.getPassword())); //y se la asignamos al usuario
+            boolean isAdmin= userDto.getRoles().stream().anyMatch(r -> ERole.ADMIN.equals(r.getRole()));
+            User userSave=dtoToEntity(userDto);
+            userSave.setAdmin(isAdmin);
+            userSave.setEstado("activo");
+            userRepository.save(userSave);
             responseDTO.setMessage("Usuario creado exitosamente!");
             return responseDTO;
         } catch (Exception e) {
@@ -79,5 +86,19 @@ public class AuthServiceImpl implements IAuthService {
     // convertir de DTO a Entidad
     private User dtoToEntity(UserDto userDto) {
         return modelMapper.map(userDto, User.class);
+    }
+    private Set<Role> getRoles(User user){
+        Optional<Role> ou = roleRepository.findById(2);
+        Set<Role> roles = new HashSet<>();
+        if (ou.isPresent()) {
+            roles.add(ou.orElseThrow());
+        }
+        if(user.isAdmin()){
+            Optional<Role> oa = roleRepository.findById(1);
+            if (oa.isPresent()) {
+                roles.add(oa.orElseThrow());
+            }
+        }
+        return roles;
     }
 }

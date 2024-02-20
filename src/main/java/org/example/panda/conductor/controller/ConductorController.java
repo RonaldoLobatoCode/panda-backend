@@ -15,14 +15,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "api/conductores")
+@RequestMapping(path = "/api/v1")
 @AllArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173")
 public class ConductorController {
 
     private final IConductorService conductorService;
 
-    @GetMapping
+    @GetMapping("/conductores")
     public ResponseEntity<ConductorResponse> listConductores(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.NUMERO_PAG_POR_DEFECTO, required = false) int numeroDePagina,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.MEDIDA_PAG_POR_DEFECTO, required = false) int medidaDePagina,
@@ -32,43 +32,26 @@ public class ConductorController {
         return ResponseEntity.ok(conductorResponse);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/conductor/{id}")
     public ResponseEntity<ConductorDto> findConductorById(@PathVariable("id") Integer id){
         return new ResponseEntity<>(conductorService.listConductorById(id), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/conductor")
     public ResponseEntity<?> createConductor(@Valid @RequestBody ConductorDto conductorDto) {
-        try {
             ConductorDto createdConductor = conductorService.createConductor(conductorDto);
             return new ResponseEntity<>(createdConductor, HttpStatus.CREATED);
-        } catch (DataIntegrityViolationException e) {
-            String customMessage = generateCustomErrorMessage(e);
-            return ResponseEntity.badRequest().body(customMessage);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error interno del servidor: " + e.getMessage());
-        }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/conductor/{id}")
     public ResponseEntity<ConductorDto> updateConductor(@Valid @RequestBody ConductorDto conductorDto, @PathVariable("id") Integer id){
         return new ResponseEntity<>(conductorService.updateConductor(id,conductorDto), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/conductor/{id}")
     public ResponseEntity<String> deleteCarreta(@PathVariable("id") Integer id){
         conductorService.deleteConductor(id);
         return new ResponseEntity<>("Conductor eliminado con exito", HttpStatus.NO_CONTENT);
-    }
-
-    private String generateCustomErrorMessage(DataIntegrityViolationException e) {
-        if (e.getMessage().contains("El trabajador ya está asignado a un conductor.")) {
-            return "Error: El trabajador seleccionado ya está asignado a otro conductor.";
-        } else if (e.getMessage().contains("El camión ya está asignado a un conductor.")) {
-            return "Error: El camión seleccionado ya está asignado a otro conductor.";
-        } else {
-            return "Error: La entrada ya existe o viola una restricción de unicidad.";
-        }
     }
 }
 

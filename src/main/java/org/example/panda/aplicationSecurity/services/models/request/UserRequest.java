@@ -1,20 +1,16 @@
-package org.example.panda.aplicationSecurity.services.models.dtos;
-
+package org.example.panda.aplicationSecurity.services.models.request;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.example.panda.aplicationSecurity.persistence.entities.Role;
 
-import java.util.Set;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class UserRequest {
     Long id;
-
     @Size(min = 6, message = "El documento de identidad tiene que tener más de 6 caracteres.")
     @NotNull(message = "Este campo no puede ser nulo")
     private String numIdentidad;
@@ -37,14 +33,6 @@ public class UserDto {
 
     @Pattern(regexp = "\\d{8,15}", message = "El número de teléfono debe tener entre 8 y 15 dígitos.")
     private String telefono;
-
-    @Pattern(
-            regexp = "^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$",
-            message = "La contraseña debe contener al menos una mayúscula, un carácter especial y tener un mínimo de 8 dígitos."
-    )
-    @NotNull(message = "Este campo no puede ser nulo")
-    private String password;
-
-    private Set<Role> roles; //set: para que el rol sea único
     private boolean admin;
+
 }
