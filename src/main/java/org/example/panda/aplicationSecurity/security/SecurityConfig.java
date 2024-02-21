@@ -40,7 +40,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authRequest ->
                                 authRequest
                                         .requestMatchers(HttpMethod.GET,"/api/v1/**").permitAll()
-                                        .requestMatchers("/api/v1/auth/**").permitAll() //estas rutas ya son publicas, puede acceder cualquiera
+                                        .requestMatchers("/api/v1/auth/**",
+                                                "/v2/api-docs",
+                                                "/v3/api-docs",
+                                                "/v3/api-docs/**",
+                                                "/swagger-resources",
+                                                "/swagger-resources/**",
+                                                "/configuration/ui",
+                                                "/configuration/security",
+                                                "/swagger-ui/**",
+                                                "/webjars/**",
+                                                "/swagger-ui.html").permitAll() //estas rutas ya son publicas, puede acceder cualquiera
                                         .anyRequest().authenticated() //para el resto de request tienen que estar autenticados.
                         //si queremos manejar roles y mas autorizaciones personalizadas iría en esta parte
                 )
