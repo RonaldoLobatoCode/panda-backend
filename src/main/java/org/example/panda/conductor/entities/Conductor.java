@@ -13,8 +13,8 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "conductores_camion", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"trabajador_id"}),
-        @UniqueConstraint(columnNames = {"camion_id"})
+        @UniqueConstraint(columnNames = { "trabajador_id" }),
+        @UniqueConstraint(columnNames = { "camion_id" })
 })
 @Data
 @AllArgsConstructor
@@ -57,20 +57,3 @@ public class Conductor implements Serializable {
     @Column(name = "cert_seguridad_vial", nullable = false)
     private boolean certSeguridadVial;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

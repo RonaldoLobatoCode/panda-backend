@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
+
 @RequestMapping("/api/v1/auth") //esta url es la que pusimos cuando creamos el secutityconfig, el auth tiene que estar definido, si no las rutas no serán públicas
 @CrossOrigin(origins = "http://localhost:5173")
 @SecurityRequirement(name = "bearerAuth")
@@ -93,13 +94,14 @@ public class AuthController {
                     )
             }
     )
+
     @PostMapping("/login")
     private ResponseEntity<HashMap<String, String>> login(@Valid @RequestBody LoginDto loginDTO) throws Exception {
-        HashMap<String,String> loginHash = authService.login(loginDTO);
-        if(loginHash.containsKey("jwt")){
+        HashMap<String, String> loginHash = authService.login(loginDTO);
+        if (loginHash.containsKey("jwt")) {
             return new ResponseEntity<>(loginHash, HttpStatus.OK);
-        }else {
-            return  new ResponseEntity<>(loginHash,HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(loginHash, HttpStatus.UNAUTHORIZED);
         }
     }
 }

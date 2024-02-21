@@ -35,7 +35,8 @@ public class CarretaServiceImpl implements ICarretaService {
 
     @Override
     public CarretaResponse listCarreta(int numeroDePagina, int medidaDePagina, String ordenarPor, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())?Sort.by(ordenarPor).ascending():Sort.by(ordenarPor).descending();
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(ordenarPor).ascending()
+                : Sort.by(ordenarPor).descending();
 
         Pageable pageable = PageRequest.of(numeroDePagina, medidaDePagina, sort);
         Page<Carreta> carretas = carretaRepository.findAll(pageable);
@@ -55,46 +56,51 @@ public class CarretaServiceImpl implements ICarretaService {
 
     @Override
     public CarretaDto listCarretaById(Integer id) {
-        Carreta carreta = carretaRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Carreta","id",id));
+        Carreta carreta = carretaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Carreta", "id", id));
         return carretaEntityToDto(carreta);
     }
 
     @Override
     public CarretaDto updateCarreta(Integer id, CarretaDto carretaDto) {
-        if(carretaDto.getId() == null || id.equals(carretaDto.getId())){
+        if (carretaDto.getId() == null || id.equals(carretaDto.getId())) {
             validarPlaca(carretaDto, id);
             Carreta findCarreta = carretaRepository.findById(id)
-                    .orElseThrow(()-> new ResourceNotFoundException("Carreta","id",id));
+                    .orElseThrow(() -> new ResourceNotFoundException("Carreta", "id", id));
             carretaDto.setId(findCarreta.getId());
             return carretaEntityToDto(carretaRepository.save(carretaDtoToEntity(carretaDto)));
         }
-        throw new IllegalArgumentException("Existe una discrepancia entre el ID proporcionado en la URL y el ID del registro correspondiente.");
+        throw new IllegalArgumentException(
+                "Existe una discrepancia entre el ID proporcionado en la URL y el ID del registro correspondiente.");
     }
 
     @Override
     public void deleteCarreta(Integer id) {
         Carreta carreta = carretaRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Carreta","id",id));
+                .orElseThrow(() -> new ResourceNotFoundException("Carreta", "id", id));
         carretaRepository.delete(carreta);
     }
 
-    //Convertir de DTO a entidad
-    private CarretaDto carretaEntityToDto(Carreta carreta){
+    // Convertir de DTO a entidad
+    private CarretaDto carretaEntityToDto(Carreta carreta) {
         return modelMapper.map(carreta, CarretaDto.class);
     }
 
-    private Carreta carretaDtoToEntity(CarretaDto carretaDto){
+    private Carreta carretaDtoToEntity(CarretaDto carretaDto) {
         return modelMapper.map(carretaDto, Carreta.class);
     }
-    public void validarPlaca( CarretaDto carretaDto, Integer id){
+
+    public void validarPlaca(CarretaDto carretaDto, Integer id) {
         List<Carreta> camiones = carretaRepository.findAll();
-        for(Carreta c : camiones){
-            if(c.getPlaca().equals(carretaDto.getPlaca()) && !c.getId().equals(id)) {
-                throw new IllegalArgumentException("Lamentamos informarle que la placa ingresada ya está registrada en nuestro sistema. Por favor, verifique y proporcione un número de placa único.");
+        for (Carreta c : camiones) {
+            if (c.getPlaca().equals(carretaDto.getPlaca()) && !c.getId().equals(id)) {
+                throw new IllegalArgumentException(
+                        "Lamentamos informarle que la placa ingresada ya está registrada en nuestro sistema. Por favor, verifique y proporcione un número de placa único.");
             }
         }
     }
-    public void validarPlaca(CarretaDto carretaDto){
+
+    public void validarPlaca(CarretaDto carretaDto) {
         List<Carreta> camiones = carretaRepository.findAll();
         for(Carreta c : camiones){
             if(c.getPlaca().equals(carretaDto.getPlaca())) {
@@ -103,14 +109,3 @@ public class CarretaServiceImpl implements ICarretaService {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
