@@ -1,27 +1,18 @@
 package org.example.panda.guiaTransportista.dtos;
 
-import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.example.panda.aplicationSecurity.persistence.entities.User;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
-
-import org.example.panda.aplicationSecurity.persistence.entities.User;
-import org.example.panda.trabajador.entities.Trabajador;
-import org.springframework.format.annotation.DateTimeFormat;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 @Builder
-public class GuiaTransportistaDto implements Serializable {
-
+public class GuiaTransportistaResponseById {
     private Integer id;
+
+
     private String serieGuia;
 
     private Integer numeroGuia;
@@ -56,6 +47,4 @@ public class GuiaTransportistaDto implements Serializable {
     private String placaVehiculo;
 
     private String rucPagadorDelFlete;
-
-    private User user;
 }

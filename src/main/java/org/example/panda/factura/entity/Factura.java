@@ -5,12 +5,13 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Set;
 
+import org.example.panda.aplicationSecurity.persistence.entities.Role;
+import org.example.panda.aplicationSecurity.persistence.entities.User;
 import org.example.panda.guiaTransportista.entity.GuiaTransportista;
 import org.example.panda.item.entity.Item;
-import org.example.panda.trabajador.entities.Trabajador;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,13 +31,13 @@ public class Factura implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "serie_guia", nullable = false)
-    private String serieGuia;
+    @Column(name = "serie_factura", nullable = false)
+    private String serieFactura;
 
-    @Column(name = "numero_factura", nullable = false)
+    @Column(name = "numero_factura")
     private Integer numeroFactura;
 
-    @Column(name = "fecha_emision", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "fecha_emision", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp fechaEmision;
 
     @Column(name = "sub_total", nullable = false)
@@ -45,9 +46,10 @@ public class Factura implements Serializable {
     @Column(name = "igv", nullable = false)
     private BigDecimal igv;
 
-    @Column(name = "monto_total", nullable = false)
+    @Column(name = "monto_total")
     private BigDecimal montoTotal;
-
+    @Column(name = "cliente_ruc", nullable = false)
+    private String clienteRuc;
     @Column(name = "cliente_razonSocial", nullable = false, length = 255)
     private String clienteRazonSocial;
 
@@ -55,18 +57,18 @@ public class Factura implements Serializable {
     private String clienteDireccion;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "guia_id", nullable = false)
     private GuiaTransportista guiaTransportista;
+    @Column(name = "OBSERVACION", nullable = false, length = 255)
+    private String observacion;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @JoinColumn(name = "item_id", nullable = false)
-    private Item item;
+    @JoinColumn(name = "id_user", nullable = false)
+    private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @JoinColumn(name = "id_trabajador", nullable = false)
-    private Trabajador trabajador;
-
+    @ManyToMany(fetch = FetchType.EAGER, targetEntity = Item.class, cascade = CascadeType.PERSIST)
+    @JoinTable(name = "factura_items",
+            joinColumns = @JoinColumn(name = "id_factura", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "id_item", referencedColumnName = "id"))
+    private Set<Item> items;
 }

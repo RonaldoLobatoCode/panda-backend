@@ -5,25 +5,17 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import jakarta.persistence.*;
+import org.example.panda.aplicationSecurity.persistence.entities.User;
 import org.example.panda.trabajador.entities.Trabajador;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "guias_transportista", uniqueConstraints = { @UniqueConstraint(columnNames = { "id_trabajador" }) })
+@Table(name = "guias_transportista")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -38,7 +30,7 @@ public class GuiaTransportista implements Serializable {
     @Column(name = "serie_guia", nullable = false)
     private String serieGuia;
 
-    @Column(name = "numero_guia", nullable = false)
+    @Column(name = "numero_guia")
     private Integer numeroGuia;
 
     @Column(name = "partida", nullable = false)
@@ -47,9 +39,17 @@ public class GuiaTransportista implements Serializable {
     @Column(name = "llegada", nullable = false)
     private String llegada;
 
-    @Column(name = "fecha_emision", nullable = false)
+    @Column(name = "fecha_emision")
     private Timestamp fechaEmision;
-
+    @PrePersist
+    protected void onCreate() {
+        // Verificar si la fecha de ingreso ya está establecida
+        if (this.fechaEmision == null) {
+            // Si la fecha de ingreso no está establecida, establecerla como la fecha y hora
+            // actual
+            this.fechaEmision = new Timestamp(System.currentTimeMillis());
+        }
+    }
     @Column(name = "fecha_traslado", nullable = false)
     private Date fechaTraslado;
 
@@ -87,6 +87,7 @@ public class GuiaTransportista implements Serializable {
     private String rucPagadorDelFlete;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_trabajador")
-    private Trabajador trabajador;
+    @JoinColumn(name = "id_user")
+    private User user;
+
 }

@@ -100,7 +100,7 @@ public class TrabajadorServiceImpl implements ITrabajadorService {
         String authorization = "Bearer " + tokenApi;
         return reniecClient.getInfo(numero, authorization);
     }
-    /*AQUI HACEMOS USO DE ModelMapper PARA AHORRAR MUCHAS LINEAS DE CODIGO, PERO DEJAREMOS COMENTADO LO QUE HABIAMOS HECHO ANTES A MODO DE PRÁCTICA*/
+    /*AQUI HACEMOS USO DE ModelMapper PARA AHORRAR MUCHAS LINEAS DE CODIGO,*/
     private TrabajadorDto trabajadorEntityToDto(Trabajador trabajador){
         return modelMapper.map(trabajador, TrabajadorDto.class);//PublicacionDTO.class: La clase destino a la que se mapearán los datos.
     }

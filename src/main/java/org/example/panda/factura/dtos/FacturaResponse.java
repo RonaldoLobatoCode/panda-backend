@@ -17,5 +17,4 @@ public class FacturaResponse {
     private long totalElementos;
     private int totalPaginas;
     private boolean ultima;
-
 }

@@ -111,15 +111,18 @@ public class CamionServiceImpl implements ICamionService {
             throw new IllegalArgumentException("El id no existe en la base de datos.");
         }
     }
-    public void validarPlaca(CamionDto camionDto){
+    public void validarPlaca(CamionDto camionDto) {
         List<Camion> camiones = camionRepository.findAll();
-        for(Camion c : camiones){
-            if(c.getPlaca().equals(camionDto.getPlaca())) {
+        for (Camion c : camiones) {
+            // Verifica si la placa es null antes de llamar a getPlaca()
+            if (c.getPlaca() != null && c.getPlaca().equals(camionDto.getPlaca())) {
                 throw new IllegalArgumentException("La placa ingresada ya existe en nuestro sistema.");
             }
         }
-        if(carretaRepository.findById(camionDto.getCarreta().getId()).isEmpty()){
-            throw new IllegalArgumentException("El id no existe en la base de datos.");
+
+        // Verifica si el objeto camionDto o su propiedad carreta son null antes de intentar acceder a su ID
+        if (camionDto.getCarreta() == null || carretaRepository.findById(camionDto.getCarreta().getId()).isEmpty()) {
+            throw new IllegalArgumentException("El id de la carreta no existe en la base de datos.");
         }
     }
 }

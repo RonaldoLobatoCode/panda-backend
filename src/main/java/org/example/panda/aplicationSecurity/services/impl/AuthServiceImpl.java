@@ -42,6 +42,7 @@ public class AuthServiceImpl implements IAuthService {
             if (verifyPassword(loginDTO.getPassword(), user.get().getPassword())) {
                 jwt.put("jwt", jwtUtilityService.generateJWT(user.get().getId()));
                 jwt.put("username",loginDTO.getUsername());
+                jwt.put("idUser", String.valueOf(user.get().getId()));
             } else{
                 jwt.put("error","Authentication failed");
             }
