@@ -37,8 +37,17 @@ public class Factura implements Serializable {
     @Column(name = "numero_factura")
     private Integer numeroFactura;
 
-    @Column(name = "fecha_emision", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "fecha_emision")
     private Timestamp fechaEmision;
+    @PrePersist
+    protected void onCreate() {
+        // Verificar si la fecha de ingreso ya está establecida
+        if (this.fechaEmision == null) {
+            // Si la fecha de ingreso no está establecida, establecerla como la fecha y hora
+            // actual
+            this.fechaEmision = new Timestamp(System.currentTimeMillis());
+        }
+    }
 
     @Column(name = "sub_total", nullable = false)
     private BigDecimal subTotal;

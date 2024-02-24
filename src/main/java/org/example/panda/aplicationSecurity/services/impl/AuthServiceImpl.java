@@ -59,8 +59,7 @@ public class AuthServiceImpl implements IAuthService {
             List<User> getAllUsers = userRepository.findAll();
             for (User repearFields : getAllUsers) {
                 if (Objects.equals(repearFields.getUsername(), userDto.getUsername())) {
-                    responseDTO.setMessage("Ya existe un usuario con el mismo nombre!");
-                    return responseDTO;
+                    throw new IllegalArgumentException("Ya existe un usuario con el mismo nombre!");
                 }
             }
             Set<Role> roles =getRoles(dtoToEntity(userDto));
@@ -89,13 +88,13 @@ public class AuthServiceImpl implements IAuthService {
         return modelMapper.map(userDto, User.class);
     }
     private Set<Role> getRoles(User user){
-        Optional<Role> ou = roleRepository.findById(2);
+        Optional<Role> ou = roleRepository.findByRole(ERole.USER);
         Set<Role> roles = new HashSet<>();
         if (ou.isPresent()) {
             roles.add(ou.orElseThrow());
         }
         if(user.isAdmin()){
-            Optional<Role> oa = roleRepository.findById(1);
+            Optional<Role> oa = roleRepository.findByRole(ERole.ADMIN);
             if (oa.isPresent()) {
                 roles.add(oa.orElseThrow());
             }

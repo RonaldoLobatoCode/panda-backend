@@ -9,8 +9,7 @@ public interface IGuiaTransportistaService {
 
     GuiaTransportistaDto createGuiaTransportista(GuiaTransportistaRequest request);
 
-    GuiaTransportistaResponse listGuiaTransportista(int numeroDePagina, int medidaDePagina, String ordenarPor,
-            String sortDir);
+    GuiaTransportistaResponse listGuiaTransportista(int numeroDePagina, int medidaDePagina, String ordenarPor, String sortDir);
 
     GuiaTransportistaResponseById listGuiaTransportistaById(Integer id);
 }

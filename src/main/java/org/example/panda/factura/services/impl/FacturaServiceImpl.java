@@ -5,6 +5,8 @@ import org.example.panda.aplicationSecurity.persistence.entities.User;
 import org.example.panda.aplicationSecurity.persistence.repositories.UserRepository;
 import org.example.panda.factura.dtos.FacturaDto;
 import org.example.panda.factura.dtos.FacturaRequest;
+import org.example.panda.factura.dtos.FacturaResponse;
+import org.example.panda.factura.dtos.FacturaResponseById;
 import org.example.panda.factura.entity.Factura;
 import org.example.panda.factura.repository.FacturaRepository;
 import org.example.panda.factura.services.FacturaService;
@@ -16,6 +18,10 @@ import org.example.panda.item.entity.Item;
 import org.example.panda.item.repository.ItemRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Service
 public class FacturaServiceImpl implements FacturaService {
@@ -51,8 +58,8 @@ public class FacturaServiceImpl implements FacturaService {
     @Transactional
     public FacturaDto createFactura(FacturaRequest request) {
         // Obtener información del remitente desde Sunat
-        SunatResponse responseRemitente = getExecution(request.getClienteRuc());
-        validarRemitente(responseRemitente);
+        SunatResponse responseCliente = getExecution(request.getClienteRuc());
+        validarCliente(responseCliente);
 
         // Obtener la guía transportista
         Optional<GuiaTransportista> guia = guiaTransportistaRepository.getGuiaTransportistaByNumeroGuia(request.getNumeroGuia());
@@ -72,23 +79,50 @@ public class FacturaServiceImpl implements FacturaService {
         int nuevoNumeroFac = ultimoNumeroFac.incrementAndGet();
 
         // Construir la factura
-        Factura factura = construirFactura(responseRemitente, guia.get(), subTotal, total, user, nuevoNumeroFac, itemsSave, request);
+        Factura factura = construirFactura(responseCliente, guia.get(), subTotal, total, user, nuevoNumeroFac, itemsSave, request);
 
         // Guardar y convertir la factura a DTO
         return facturaEntityToDto(facturaRepository.save(factura));
     }
 
-// Funciones auxiliares
+    @Override
+    public FacturaResponse listFacturas(int numeroDePagina, int medidaDePagina, String ordenarPor, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(ordenarPor).ascending()
+                : Sort.by(ordenarPor).descending();
 
-    private void validarRemitente(SunatResponse responseRemitente) {
-        if (responseRemitente == null) {
-            throw new IllegalArgumentException("El RUC del remitente no está disponible");
-        }
+        Pageable pageable = PageRequest.of(numeroDePagina, medidaDePagina, sort);
+        Page<Factura> facturaPage = facturaRepository.findAll(pageable);
+
+        List<Factura> facturasList = facturaPage.getContent();
+        List<FacturaResponseById> contenido = facturasList.stream().map(this::facturaEntityToResponse)
+                .collect(Collectors.toList());
+
+        return FacturaResponse.builder()
+                .contenido(contenido)
+                .numeroPagina(facturaPage.getNumber())
+                .medidaPagina(facturaPage.getSize())
+                .totalElementos(facturaPage.getTotalElements())
+                .totalPaginas(facturaPage.getTotalPages())
+                .ultima(facturaPage.isLast())
+                .build();
     }
 
+// Funciones auxiliares
+
+    private void validarCliente(SunatResponse responseCliente) {
+        if (responseCliente == null) {
+            throw new IllegalArgumentException("El RUC del cliente no esta disponible.");
+        }
+    }
     private void validarGuiaTransportista(Optional<GuiaTransportista> guia) {
         if (guia.isEmpty()) {
-            throw new IllegalArgumentException("El número de guía no está registrada. Por favor, ingrese un número válido");
+            throw new IllegalArgumentException("El número de guia no esta registrada.");
+        }
+        List<Factura> facturas= facturaRepository.findAll();
+        for (Factura f : facturas) {
+            if(f.getGuiaTransportista().getId().equals(guia.get().getId())){
+                throw new IllegalArgumentException("La guia ya esta asociada a una factura.");
+            }
         }
     }
 
@@ -123,5 +157,8 @@ public class FacturaServiceImpl implements FacturaService {
     }
     private FacturaDto facturaEntityToDto(Factura factura) {
         return modelMapper.map(factura, FacturaDto.class);
+    }
+    private FacturaResponseById facturaEntityToResponse(Factura factura){
+        return  modelMapper.map(factura, FacturaResponseById.class);
     }
 }

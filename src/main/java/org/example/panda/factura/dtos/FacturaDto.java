@@ -27,7 +27,7 @@ public class FacturaDto implements Serializable {
 
     private Integer id;
 
-    private String serieGuia;
+    private String serieFactura;
 
     private Integer numeroFactura;
 

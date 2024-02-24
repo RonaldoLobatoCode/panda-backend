@@ -11,7 +11,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class FacturaResponse {
 
-    private List<FacturaDto> contenido;
+    private List<FacturaResponseById> contenido;
     private int numeroPagina;
     private int medidaPagina;
     private long totalElementos;
