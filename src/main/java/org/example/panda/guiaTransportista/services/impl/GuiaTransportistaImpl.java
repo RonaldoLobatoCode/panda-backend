@@ -51,7 +51,7 @@ public class GuiaTransportistaImpl implements IGuiaTransportistaService {
     }
 
     @Override
-    public GuiaTransportistaDto createGuiaTransportista(GuiaTransportistaRequest request) {
+    public GuiaTransportistaResponseById createGuiaTransportista(GuiaTransportistaRequest request) {
         SunatResponse responseRemitente=getExecution(request.getRemitenteRuc());
         if(responseRemitente==null){
             throw new IllegalArgumentException("el ruc remitente no está disponible!");
@@ -79,7 +79,7 @@ public class GuiaTransportistaImpl implements IGuiaTransportistaService {
                 .user(user)
                 .build();
         GuiaTransportista save = guiaTransportistaRepository.save(guiaTransportista);
-        return guiaEntityToDto(save);
+        return guiaEntityToResponse(save);
     }
 
     @Override
@@ -137,6 +137,9 @@ public class GuiaTransportistaImpl implements IGuiaTransportistaService {
 
     private GuiaTransportistaDto guiaEntityToDto(GuiaTransportista guiaTransportista) {
         return modelMapper.map(guiaTransportista, GuiaTransportistaDto.class);
+    }
+    private GuiaTransportistaResponseById guiaEntityToResponse(GuiaTransportista guiaTransportista){
+        return modelMapper.map(guiaTransportista, GuiaTransportistaResponseById.class);
     }
     public SunatResponse getExecution(String numero){
         String authorization = "Bearer " + tokenApi;

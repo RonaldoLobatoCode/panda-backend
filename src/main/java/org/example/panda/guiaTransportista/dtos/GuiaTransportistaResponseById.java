@@ -9,10 +9,10 @@ import java.util.Date;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class GuiaTransportistaResponseById {
     private Integer id;
-
-
     private String serieGuia;
 
     private Integer numeroGuia;
@@ -22,7 +22,6 @@ public class GuiaTransportistaResponseById {
     private String llegada;
 
     private Timestamp fechaEmision;
-
 
     private Date fechaTraslado;
 

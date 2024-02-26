@@ -1,5 +1,6 @@
 package org.example.panda.item.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.example.panda.item.dtos.ItemDto;
 import org.example.panda.item.dtos.ItemResponse;
 import org.example.panda.item.services.ItemService;
@@ -24,6 +25,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping(path = "api/items")
 @AllArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173")
+@SecurityRequirement(name = "bearerAuth")
 public class ItemController {
 
     private final ItemService itemService;
