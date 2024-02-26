@@ -33,4 +33,4 @@ build/
 ### VS Code ###
 .vscode/
 secrets.properties
-jwtKeys/
+src/main/resources/jwtKeys/
