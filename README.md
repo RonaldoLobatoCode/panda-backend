@@ -1,7 +1,7 @@
 # Backend Project Documentation for Transport Company
 ![Iconos de Tecnologías](Panda.png)
 ## Project Description
-This backend project developed in Spring Boot is designed to manage records of workers, drivers, trucks, carts and users for a transportation company. It offers a set of functionalities that include security, data transaction, connection to external services of Reniec and Sunat, documentation with Swagger, exception control, access to PostgreSQL database, unit testing and generation of reports in PDF format.
+This backend project developed in Spring Boot is designed to manage records of workers, drivers, trucks, carts and users for a transportation company. It offers a set of functionalities that include security, data transaction, connection to external services of Reniec and Sunat, documentation with Swagger, exception control, access to PostgreSQL database hosted on AWS RDS, unit testing, and generation of reports in PDF format. The application is deployed on AWS EC2 instances for scalability and reliability.
 
 ## Key Features
 - Security: Implemented using Spring Security and JWT (JSON Web Tokens), with access control for different types of users.
@@ -25,13 +25,16 @@ This backend project developed in Spring Boot is designed to manage records of w
 - JUnit and Mockito: Unit testing frameworks for Java.
 - JasperReports-Fonts: Library for generating PDF reports.
 - OpenFeign: For consuming external APIs.
+- AWS RDS (Relational Database Service): Utilized for hosting the PostgreSQL database securely and efficiently.
+- AWS EC2 (Elastic Compute Cloud): Deployed the application on EC2 instances for scalability and reliability.
+- 
 <p align="center">
   <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=java,spring,idea,postgres,postman,docker,git&perline=14" />
+    <img src="https://skillicons.dev/icons?i=java,spring,idea,postgres,postman,docker,git, aws&perline=14" />
   </a>
 </p>
 ## Installation and Usage Requirements
-Para ejecutar este proyecto en su entorno local, asegúrese de tener instalado lo siguiente:
+To run this project in your local environment, make sure you have the following installed:
 
 - Java JDK (preferably version 8 or higher)
 - Maven
